@@ -21,6 +21,7 @@
     <ClCompile Include="Device.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="SwapChain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -35,5 +36,6 @@
     <ClInclude Include="Device.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="SwapChain.h" />
   </ItemGroup>
 </Project>
