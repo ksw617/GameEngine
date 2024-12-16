@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\MainGame">
-      <UniqueIdentifier>{4233cd8d-7848-4bd1-b013-5e1a62a69cc0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pch">
-      <UniqueIdentifier>{7fe53edc-8684-45da-a122-264579b82496}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -30,29 +24,29 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameEngine.h">
+    <ClInclude Include="Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MainGame.h">
-      <Filter>Source Files\MainGame</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Pch.h">
-      <Filter>Pch</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MainGame.cpp">
-      <Filter>Source Files\MainGame</Filter>
+    <ClCompile Include="Client.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameEngine.cpp">
+    <ClCompile Include="MainGame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Pch.cpp">
-      <Filter>Pch</Filter>
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="GameEngine.rc">
+    <ResourceCompile Include="Client.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
@@ -60,7 +54,7 @@
     <Image Include="small.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="GameEngine.ico">
+    <Image Include="Client.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
