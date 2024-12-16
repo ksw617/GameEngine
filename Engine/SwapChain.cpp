@@ -1,25 +1,19 @@
 #include "pch.h"
 #include "SwapChain.h"
 
-//SwapChain 초기화
 void SwapChain::Init(HWND hwnd, int width, int height, bool windowed, ComPtr<ID3D12Device> device, ComPtr<IDXGIFactory> dxgi, ComPtr<ID3D12CommandQueue> cmdQueue)
 {
-	//스왑 체인 생성
 	CreateSwapChain(hwnd, width, height, windowed, dxgi, cmdQueue);
-	//렌더 타겟 뷰(RTV) 생성
 	CreatRTV(device);
 }
 
-//현재 백 버퍼의 내용을 화면에 출력하는 함수
 void SwapChain::Present()
 {
-	//Vsync를 사용 하지 않고 화면 출력
 	swapChain->Present(0,0);
 }
 
 void SwapChain::SwapIndex()
 {
-	//백 버퍼 인덱스를 순환하여 해당 버퍼 인덱스를 교환
 	backBufferIndex = (backBufferIndex + 1) % 2;
 }
 
@@ -51,11 +45,9 @@ void SwapChain::CreateSwapChain(HWND hwnd, int width, int height, bool windowed,
 
 
 	sd.Windowed = windowed;
-	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // 수정
+	sd.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; 
 	sd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-
-	//스왑체인 생성
 	dxgi->CreateSwapChain(cmdQueue.Get(), &sd, &swapChain);
 
 
@@ -69,7 +61,6 @@ void SwapChain::CreateSwapChain(HWND hwnd, int width, int height, bool windowed,
 
 void SwapChain::CreatRTV(ComPtr<ID3D12Device> device)
 {
-
 	int rtvHeapSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvDesc;
