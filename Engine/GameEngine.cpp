@@ -15,7 +15,6 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	device = make_shared<Device>();
 	commandQueue = make_shared<CommandQueue>();
 	swapChain = make_shared<SwapChain>();
-	//RootSignature 할당
 	rootSignature = make_shared<RootSignature>();
 
 
@@ -31,12 +30,12 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 void GameEngine::Render()
 {
 
-	RenderBegin();
-
-	//Todo : 나머지 물체 그려주기
-	//추가적인 랜더링 로직을 여기에 작성
-
-	RenderEnd();
+	//RenderBegin();
+	//
+	////Todo : 나머지 물체 그려주기
+	////추가적인 랜더링 로직을 여기에 작성
+	//
+	//RenderEnd();
 
 }
 

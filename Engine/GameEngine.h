@@ -4,6 +4,8 @@
 #include "CommandQueue.h"
 #include "SwapChain.h"
 #include "RootSignature.h"
+#include "Mesh.h"   //추가
+#include "Shader.h"	//추가
 
 class GameEngine
 {
@@ -32,10 +34,8 @@ private:
 	shared_ptr<Device> device;				
 	shared_ptr<CommandQueue> commandQueue;	
 	shared_ptr<SwapChain> swapChain;		
-	//추가
 	shared_ptr<RootSignature> rootSignature;
 public:
-	//Get 함수들
 	shared_ptr<Device> GetDevice() { return device; }
 	shared_ptr<CommandQueue> GetCmdQueue() { return commandQueue; }
 	shared_ptr<SwapChain> GetSwapChain() { return swapChain; }
