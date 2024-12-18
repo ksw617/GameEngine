@@ -1,11 +1,7 @@
 #pragma once
 #include <Windows.h> 
-//메모리
 #include <memory>
-//문자열
 #include <string>
-
-//stl 추가
 #include <vector>
 #include <array>
 #include <list>
@@ -36,10 +32,27 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "d3dcompiler")
 
 
-//Vertex 구조체
 struct Vertex
 {
-	XMFLOAT3 pos; //x,y,z 위치값
-	XMFLOAT4 color;//x,y,z,w 색깔 값
+	XMFLOAT3 pos; 
+	XMFLOAT4 color;
 
+};
+
+enum class CBV_REGISTER
+{
+	b0,
+	b1,
+	b2,
+	b3,
+	b4,	
+
+	COUNT
+};
+
+enum
+{
+
+	CBV_REGISTER_COUNT = CBV_REGISTER::COUNT,  
+	REGISTER_COUNT = CBV_REGISTER_COUNT, // 전체 REGISTER_COUNT는 현재 CBV_REGISTER_COUNT
 };

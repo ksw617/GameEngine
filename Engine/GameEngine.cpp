@@ -17,13 +17,16 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	swapChain = make_shared<SwapChain>();
 	rootSignature = make_shared<RootSignature>();
 
+	//할당
+	constBuffer = make_shared<ConstantBuffer>();
 
 	device->Init();
 	commandQueue->Init(device->GetDevice(), swapChain);
 	swapChain->Init(hwnd, width, height, windowed, device->GetDevice(), device->GetDXGI(), commandQueue->GetCmdQueue());
-
-	//RootSignature 초기화
 	rootSignature->Init(device->GetDevice());
+
+	//초기화
+	constBuffer->Init(sizeof(XMFLOAT4), 256);
 }
 
 

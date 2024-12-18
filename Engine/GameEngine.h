@@ -4,8 +4,9 @@
 #include "CommandQueue.h"
 #include "SwapChain.h"
 #include "RootSignature.h"
-#include "Mesh.h"   //추가
-#include "Shader.h"	//추가
+#include "Mesh.h"  
+#include "Shader.h"	
+#include "ConstantBuffer.h"  // 추가
 
 class GameEngine
 {
@@ -35,11 +36,15 @@ private:
 	shared_ptr<CommandQueue> commandQueue;	
 	shared_ptr<SwapChain> swapChain;		
 	shared_ptr<RootSignature> rootSignature;
+	//ConstantBuffer 포인터
+	shared_ptr<ConstantBuffer> constBuffer;
 public:
 	shared_ptr<Device> GetDevice() { return device; }
 	shared_ptr<CommandQueue> GetCmdQueue() { return commandQueue; }
 	shared_ptr<SwapChain> GetSwapChain() { return swapChain; }
 	shared_ptr<RootSignature> GetRootSignature() { return rootSignature; }
+	//Get 함수
+	shared_ptr<ConstantBuffer> GetConstBuffer() { return constBuffer; }
 
 public:
 	void Init(HWND _hwnd, int _width, int _height, bool _windowed);

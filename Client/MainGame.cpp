@@ -28,12 +28,21 @@ void MainGame::Update()
 {
 	GameEngine::Get().RenderBegin();
 
-	//루트 시그니처 설정
-	GameEngine::Get().GetCmdQueue()->GetCmdList()->SetGraphicsRootSignature(GameEngine::Get().GetRootSignature()->GetSignature().Get());
-
 	shader->Update();
 
-	mesh->Render();
+	{
+		XMFLOAT4 transform(0.2f, 0.f, 0.f, 0.f);
+		mesh->SetTransform(transform);
+
+		mesh->Render();
+	}
+
+	{
+		XMFLOAT4 tranform(0.f, 0.75f, 0.f, 0.f);
+		mesh->SetTransform(tranform);
+
+		mesh->Render();
+	}
 
 	GameEngine::Get().RenderEnd();
 }

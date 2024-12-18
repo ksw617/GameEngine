@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CommandQueue.h" />
+    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="CorePch.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Device.h" />
@@ -162,9 +163,11 @@
     <ClInclude Include="RootSignature.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SwapChain.h" />
+    <ClInclude Include="TableDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandQueue.cpp" />
+    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="CorePch.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="GameEngine.cpp" />
@@ -178,6 +181,7 @@
     <ClCompile Include="RootSignature.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SwapChain.cpp" />
+    <ClCompile Include="TableDescriptor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shader\Default.hlsli" />
