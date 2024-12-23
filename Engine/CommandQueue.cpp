@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "CommandQueue.h"
 #include "SwapChain.h" 
-#include "GameEngine.h" // 호출
+#include "GameEngine.h" 
 
 CommandQueue::~CommandQueue()
 {
@@ -49,10 +49,17 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 		D3D12_RESOURCE_STATE_PRESENT,	 
 		D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	//루트 시그니처 설정
 	cmdList->SetGraphicsRootSignature(GameEngine::Get().GetRootSignature()->GetSignature().Get());
-	//ConstantBuffer Clear 호출
 	GameEngine::Get().GetConstBuffer()->Clear();
+
+	//TableDescriptor Clear 호출
+	GameEngine::Get().GetTableDesc()->Clear();
+
+	//DescHeap받아와서
+	ID3D12DescriptorHeap* descHeap = GameEngine::Get().GetTableDesc()->GetDescriptorHeap().Get();
+
+	//cmdList에 descHeap 추가
+	cmdList->SetDescriptorHeaps(1, &descHeap);
 
 	cmdList->ResourceBarrier(1, &barrier);
 	cmdList->RSSetViewports(1, vp);

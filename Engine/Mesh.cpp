@@ -31,10 +31,12 @@ void Mesh::Render()
 	GameEngine::Get().GetCmdQueue()->GetCmdList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	GameEngine::Get().GetCmdQueue()->GetCmdList()->IASetVertexBuffers(0, 1, &vertexBufferView);
 
+	//Buffer 에다가 데이터 셋팅. Buffer의 주소를 Register에다가 전송
+	GameEngine::Get().GetConstBuffer()->PushData(&transform, sizeof(transform));
 
-	//Buffer에다가 데이터 셋팅. Buffer의 주소를 Register에다가 전송 
-	GameEngine::Get().GetConstBuffer()->PushData(0, &transform, sizeof(transform));
-	GameEngine::Get().GetConstBuffer()->PushData(1, &transform, sizeof(transform));
+	//TableDescriptor에 테이블 커밋
+	GameEngine::Get().GetTableDesc()->CommitTable();
+
 
 	GameEngine::Get().GetCmdQueue()->GetCmdList()->DrawInstanced(vertexCount, 1, 0, 0);
 }

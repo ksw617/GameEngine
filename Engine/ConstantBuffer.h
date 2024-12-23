@@ -2,31 +2,39 @@
 class ConstantBuffer
 {
 private:
-	//상수 버퍼 리소스
 	ComPtr<ID3D12Resource> cbvBuffer;
-	//매핑된 버퍼 데이터 포인터
 	BYTE* mappedBuffer = nullptr;
-	//각 요소의 크기
-	int elementSize = 0;
-	//요소의 갯수
-	int elementCount = 0;
-	//현재 인덱스
-	int currentIndex = 0;
+
+	UINT32 elementSize = 0;
+	UINT32 elementCount = 0;
+	UINT32 currentIndex = 0;
+private:
+	//CBV 디스크립터 힙
+	ComPtr<ID3D12DescriptorHeap> cbvDescHeap;
+	//디스크립터 힙의 시작 CPU 핸들
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandleBegin = {};
+	//디스크립터 핸들의 증가 크기
+	UINT32 handleIncrementSize = 0;
+	//상수 버퍼 뷰(CBV) 레지스터
+	CBV_REGISTER cbvRegister = {};
+
 public:
 	ConstantBuffer();
 	~ConstantBuffer();
 private:
-	//상수 버퍼 생성
 	void CreateBuffer();
+	//View 만들기
+	void CreateView();
 public:
 	//상수 버퍼 초기화
-	void Init(int size, int count);
-	//상수 버퍼 데이터 초기화
+	void Init(CBV_REGISTER reg, UINT32 size, UINT32 count);
 	void Clear();
 	//상수 버퍼에 데이터 푸시
-	void PushData(int rootParamIndex, void* buffer, int size);
+	void PushData(void* buffer, UINT32 size);
 
-	//GPU 가상 주소 가져오기
-	D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress(int index);
+	D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress(UINT32 index);
+
+	//CPU 디스크립터 핸들 Get 함수
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(UINT32 index);
 };
 

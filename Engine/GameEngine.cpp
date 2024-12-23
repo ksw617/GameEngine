@@ -16,9 +16,8 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	commandQueue = make_shared<CommandQueue>();
 	swapChain = make_shared<SwapChain>();
 	rootSignature = make_shared<RootSignature>();
-
-	//할당
 	constBuffer = make_shared<ConstantBuffer>();
+	tableDesc = make_shared<TableDescriptor>();
 
 	device->Init();
 	commandQueue->Init(device->GetDevice(), swapChain);
@@ -26,19 +25,21 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	rootSignature->Init(device->GetDevice());
 
 	//초기화
-	constBuffer->Init(sizeof(XMFLOAT4), 256);
+	constBuffer->Init(CBV_REGISTER::b0, sizeof(XMFLOAT4), 256);
+
+	tableDesc->Init(256);
 }
 
 
 void GameEngine::Render()
 {
 
-	//RenderBegin();
+	RenderBegin();
 	//
 	////Todo : 나머지 물체 그려주기
 	////추가적인 랜더링 로직을 여기에 작성
 	//
-	//RenderEnd();
+	RenderEnd();
 
 }
 
