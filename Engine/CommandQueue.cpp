@@ -94,3 +94,24 @@ void CommandQueue::RenderEnd()
 	swapChain->SwapIndex();
 	
 }
+
+void CommandQueue::SubmitResourceCommandQueue()
+{
+	//리소스 명령 리스트를 닫음
+	resCmdList->Close();
+
+	//명령 리스트를 통해 배열 생성
+	ID3D12CommandList* cmdListArr[] = { resCmdList.Get() };
+
+	//명령 대기열에 명령 리스트를 제출하여 실행
+	cmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	//동기화 대기
+	WaitSync();
+
+	//리소스 명령 할당자 재설정
+	resCmdAlloc->Reset();
+
+	//리소스 명령 리스트를 리소스 명령 할당자와 함께 재설정
+	resCmdList->Reset(resCmdAlloc.Get(), nullptr);
+}
