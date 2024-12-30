@@ -8,7 +8,6 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	height = _height;
 	windowed = _windowed;
 
-	ResizeWindow(_width, _height);
 	viewPort = { 0,0, static_cast<FLOAT>(width), static_cast<FLOAT>(height), 0.0f, 1.0f };
 	scissorRect = CD3DX12_RECT(0, 0, width, height);
 
@@ -18,16 +17,17 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	rootSignature = make_shared<RootSignature>();
 	constBuffer = make_shared<ConstantBuffer>();
 	tableDesc = make_shared<TableDescriptor>();
+	depthStencilBuffer = make_shared<DepthStencilBuffer>(); // 할당
 
 	device->Init();
 	commandQueue->Init(device->GetDevice(), swapChain);
 	swapChain->Init(hwnd, width, height, windowed, device->GetDevice(), device->GetDXGI(), commandQueue->GetCmdQueue());
 	rootSignature->Init(device->GetDevice());
-
-	//초기화
 	constBuffer->Init(CBV_REGISTER::b0, sizeof(XMFLOAT4), 256);
-
 	tableDesc->Init(256);
+
+	//아래로
+	ResizeWindow(_width, _height);
 }
 
 
@@ -35,10 +35,7 @@ void GameEngine::Render()
 {
 
 	RenderBegin();
-	//
-	////Todo : 나머지 물체 그려주기
-	////추가적인 랜더링 로직을 여기에 작성
-	//
+ 
 	RenderEnd();
 
 }
@@ -64,4 +61,7 @@ void GameEngine::ResizeWindow(int _width, int _height)
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
 
 	SetWindowPos(hwnd, 0, 100, 100, width, height, 0);
+
+	//초기화
+	depthStencilBuffer->Init(width, height);
 }

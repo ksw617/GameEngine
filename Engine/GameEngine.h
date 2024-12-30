@@ -8,6 +8,8 @@
 #include "Shader.h"	
 #include "ConstantBuffer.h"  
 #include "TableDescriptor.h"
+#include "Texture.h" 
+#include "DepthStencilBuffer.h" // 추가
 
 class GameEngine
 {
@@ -38,16 +40,17 @@ private:
 	shared_ptr<SwapChain> swapChain;		
 	shared_ptr<RootSignature> rootSignature;
 	shared_ptr<ConstantBuffer> constBuffer;
-	//TableDescriptor 포인터
 	shared_ptr<TableDescriptor> tableDesc;
+	shared_ptr<DepthStencilBuffer> depthStencilBuffer; // 추가
 public:
 	shared_ptr<Device> GetDevice() { return device; }
 	shared_ptr<CommandQueue> GetCmdQueue() { return commandQueue; }
 	shared_ptr<SwapChain> GetSwapChain() { return swapChain; }
 	shared_ptr<RootSignature> GetRootSignature() { return rootSignature; }
 	shared_ptr<ConstantBuffer> GetConstBuffer() { return constBuffer; }
-	//Get 함수
 	shared_ptr<TableDescriptor> GetTableDesc() { return tableDesc; }
+	//Get함수
+	shared_ptr<DepthStencilBuffer> GetDepthStencilBuffer() { return depthStencilBuffer; }
 
 public:
 	void Init(HWND _hwnd, int _width, int _height, bool _windowed);

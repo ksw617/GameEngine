@@ -2,14 +2,15 @@
 class RootSignature
 {
 private:
-	//루트 시그니처 객체를 관리하는 스마트 포인터
 	ComPtr<ID3D12RootSignature> signature;
+	//샘플러 설명자
+	D3D12_STATIC_SAMPLER_DESC samplerDesc;
 public:
-	//루트 스그니처를 반환하는 Get 함수
 	ComPtr<ID3D12RootSignature> GetSignature() const { return signature; }
-
 public:
-	//주어진 디바이스를 사용하여 루트 시그니처를 초기화
 	void Init(ComPtr<ID3D12Device> device);
+
+	//샘플러 설명자를 생성하는 함수
+	void CreateSamplerDesc();
 };
 

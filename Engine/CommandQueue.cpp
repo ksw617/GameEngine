@@ -51,16 +51,10 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 
 	cmdList->SetGraphicsRootSignature(GameEngine::Get().GetRootSignature()->GetSignature().Get());
 	GameEngine::Get().GetConstBuffer()->Clear();
-
-	//TableDescriptor Clear 호출
 	GameEngine::Get().GetTableDesc()->Clear();
 
-	//DescHeap받아와서
 	ID3D12DescriptorHeap* descHeap = GameEngine::Get().GetTableDesc()->GetDescriptorHeap().Get();
-
-	//cmdList에 descHeap 추가
 	cmdList->SetDescriptorHeaps(1, &descHeap);
-
 	cmdList->ResourceBarrier(1, &barrier);
 	cmdList->RSSetViewports(1, vp);
 	cmdList->RSSetScissorRects(1, rect);
@@ -68,7 +62,18 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = swapChain->GetBackRTV();
 
 	cmdList->ClearRenderTargetView(backBufferView, Colors::Black, 0, nullptr);
-	cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, nullptr);
+	//주석
+	//cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, nullptr);
+
+	//깊이 스텐실 뷰의 CPU 디스크립터 핸들을 가져옴
+	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = GameEngine::Get().GetDepthStencilBuffer()->GetDSVCPUHandle();
+	//기존껄 얘로 변경 
+	//출력 병합 단계에 랜더 타겟과 깊이 스텐실 뷰를 설정
+	cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, &depthStencilView);
+	
+	//깊이 스텐실 뷰를 초기화
+	//깊이 값을 1.0으로 초기화 하고 스텐실 값은 0으로 초기화
+	cmdList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 }
 
@@ -97,21 +102,15 @@ void CommandQueue::RenderEnd()
 
 void CommandQueue::SubmitResourceCommandQueue()
 {
-	//리소스 명령 리스트를 닫음
 	resCmdList->Close();
 
-	//명령 리스트를 통해 배열 생성
 	ID3D12CommandList* cmdListArr[] = { resCmdList.Get() };
 
-	//명령 대기열에 명령 리스트를 제출하여 실행
 	cmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
 
-	//동기화 대기
 	WaitSync();
 
-	//리소스 명령 할당자 재설정
 	resCmdAlloc->Reset();
 
-	//리소스 명령 리스트를 리소스 명령 할당자와 함께 재설정
 	resCmdList->Reset(resCmdAlloc.Get(), nullptr);
 }

@@ -1,28 +1,25 @@
 #include "pch.h"
 #include "RootSignature.h"
 
-//루트 시그니처 초기화
 void RootSignature::Init(ComPtr<ID3D12Device> device)
 {
-	//상수 버퍼 뷰(CBV) 레인지 배열 정의
+	//samplerDesc 만드는 함수 호출
+	CreateSamplerDesc();
+
 	CD3DX12_DESCRIPTOR_RANGE ranges[] =
 	{
-		//CBV 레인지 타입, 레지스터 갯수, 기본 쉐이더 레지스터
-		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, CBV_REGISTER_COUNT, 0)
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, CBV_REGISTER_COUNT, 0),
+		//디스크립터 레인지에 값추가 (SRV 레인지 타입, 레지스터 갯수, 기본 쉐이더 레지스터)
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, SRV_REGISTER_COUNT, 0)
 	};
 
-	//루트 파라미터 배열 정의
 	CD3DX12_ROOT_PARAMETER params[1]{};
 
-	//params[0].InitAsConstantBufferView(0);
-	//params[1].InitAsConstantBufferView(1);
 
-	//파라미터 디스크립터 테이블로 초기화
-	//(_countof(ranges) : 배열의 갯수
 	params[0].InitAsDescriptorTable(_countof(ranges), ranges);
 
-	//루트 시그니처 설명자 생성. 한의 파라미터 사용
-	D3D12_ROOT_SIGNATURE_DESC sigDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(ranges), params);
+	//매개변수 추가
+	D3D12_ROOT_SIGNATURE_DESC sigDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(ranges), params, 1, &samplerDesc);
 	
 	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -32,4 +29,11 @@ void RootSignature::Init(ComPtr<ID3D12Device> device)
 	D3D12SerializeRootSignature(&sigDesc, D3D_ROOT_SIGNATURE_VERSION_1, &blobSignature, &blobError);
 
 	device->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&signature));
+}
+
+void RootSignature::CreateSamplerDesc()
+{
+	//CD3DX12_STATIC_SAMPLER_DESC(0)는 기본 샘플러 설명자를 생성하며,
+	//레지스터 슬럿 0에 바이딩됨
+	samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
 }
