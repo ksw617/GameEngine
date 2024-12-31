@@ -19,7 +19,7 @@ void RootSignature::Init(ComPtr<ID3D12Device> device)
 	params[0].InitAsDescriptorTable(_countof(ranges), ranges);
 
 	//매개변수 추가
-	D3D12_ROOT_SIGNATURE_DESC sigDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(ranges), params, 1, &samplerDesc);
+	D3D12_ROOT_SIGNATURE_DESC sigDesc = CD3DX12_ROOT_SIGNATURE_DESC(_countof(params), params, 1, &samplerDesc);
 	
 	sigDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 

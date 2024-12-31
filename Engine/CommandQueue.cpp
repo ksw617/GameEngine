@@ -22,6 +22,11 @@ void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapC
 
 	cmdList->Close();
 
+	//리소스 명령 할당자 생성
+	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&resCmdAlloc));
+	//리소스 명령 리스트를 생성
+	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, resCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&resCmdList));
+
 	device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 	fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
@@ -61,18 +66,11 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 
 	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = swapChain->GetBackRTV();
 
-	cmdList->ClearRenderTargetView(backBufferView, Colors::Black, 0, nullptr);
-	//주석
-	//cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, nullptr);
+	cmdList->ClearRenderTargetView(backBufferView, Colors::Aqua, 0, nullptr);
 
-	//깊이 스텐실 뷰의 CPU 디스크립터 핸들을 가져옴
 	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = GameEngine::Get().GetDepthStencilBuffer()->GetDSVCPUHandle();
-	//기존껄 얘로 변경 
-	//출력 병합 단계에 랜더 타겟과 깊이 스텐실 뷰를 설정
+
 	cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, &depthStencilView);
-	
-	//깊이 스텐실 뷰를 초기화
-	//깊이 값을 1.0으로 초기화 하고 스텐실 값은 0으로 초기화
 	cmdList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 }
