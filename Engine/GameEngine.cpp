@@ -17,7 +17,10 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	rootSignature = make_shared<RootSignature>();
 	constBuffer = make_shared<ConstantBuffer>();
 	tableDesc = make_shared<TableDescriptor>();
-	depthStencilBuffer = make_shared<DepthStencilBuffer>(); // 할당
+	depthStencilBuffer = make_shared<DepthStencilBuffer>(); 	
+	input = make_shared<Input>();
+
+	timer = make_shared<Timer>(); // 할당
 
 	device->Init();
 	commandQueue->Init(device->GetDevice(), swapChain);
@@ -26,7 +29,11 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	constBuffer->Init(CBV_REGISTER::b0, sizeof(XMFLOAT4), 256);
 	tableDesc->Init(256);
 
-	//아래로
+	input->Init(hwnd);
+
+	//초기화
+	timer->Init();
+
 	ResizeWindow(_width, _height);
 }
 
@@ -38,6 +45,29 @@ void GameEngine::Render()
  
 	RenderEnd();
 
+}
+
+void GameEngine::Update()
+{
+	input->Update();
+
+	//timer 업데이트 실행
+	timer->Update();
+
+	//ShowFPS 호출
+	ShowFPS();
+}
+
+void GameEngine::ShowFPS()
+{
+	//현재 FPS를 가져옴
+	UINT32 fps = timer->GetFPS();
+
+	//FPS값을 윈도 타이틀에 출력할 문자열 생성
+	wstring fpsText = L"FPS: " + to_wstring(fps);
+
+	//윈도 타이틀을 변경하여 FPS값을 표시 
+	//SetWindowText(hwnd, fpsText.c_str());
 }
 
 
@@ -62,6 +92,6 @@ void GameEngine::ResizeWindow(int _width, int _height)
 
 	SetWindowPos(hwnd, 0, 100, 100, width, height, 0);
 
-	//초기화
+
 	depthStencilBuffer->Init(width, height);
 }

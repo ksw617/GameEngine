@@ -9,7 +9,9 @@
 #include "ConstantBuffer.h"  
 #include "TableDescriptor.h"
 #include "Texture.h" 
-#include "DepthStencilBuffer.h" // 추가
+#include "DepthStencilBuffer.h" 
+#include "Input.h"  
+#include "Timer.h" // 추가
 
 class GameEngine
 {
@@ -41,7 +43,9 @@ private:
 	shared_ptr<RootSignature> rootSignature;
 	shared_ptr<ConstantBuffer> constBuffer;
 	shared_ptr<TableDescriptor> tableDesc;
-	shared_ptr<DepthStencilBuffer> depthStencilBuffer; // 추가
+	shared_ptr<DepthStencilBuffer> depthStencilBuffer;
+	shared_ptr<Input> input; 
+	shared_ptr<Timer> timer; // 추가
 public:
 	shared_ptr<Device> GetDevice() { return device; }
 	shared_ptr<CommandQueue> GetCmdQueue() { return commandQueue; }
@@ -49,12 +53,17 @@ public:
 	shared_ptr<RootSignature> GetRootSignature() { return rootSignature; }
 	shared_ptr<ConstantBuffer> GetConstBuffer() { return constBuffer; }
 	shared_ptr<TableDescriptor> GetTableDesc() { return tableDesc; }
-	//Get함수
 	shared_ptr<DepthStencilBuffer> GetDepthStencilBuffer() { return depthStencilBuffer; }
+	shared_ptr<Input> GetInput() { return input; }
+	shared_ptr<Timer> GetTimer() { return timer; } //추가
 
 public:
 	void Init(HWND _hwnd, int _width, int _height, bool _windowed);
 	void Render();
+
+public:
+	void Update();
+	void ShowFPS(); // 함수 추가
 
 public:
 	void RenderBegin();

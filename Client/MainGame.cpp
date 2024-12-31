@@ -4,13 +4,12 @@
 
 shared_ptr<Mesh> mesh = make_shared<Mesh>();
 shared_ptr<Shader> shader = make_shared<Shader>();
-shared_ptr<Texture> texture = make_shared<Texture>(); // Texture 할당
+shared_ptr<Texture> texture = make_shared<Texture>(); 
 
 void MainGame::Init(HWND hwnd, int width, int height, bool windowed)
 {
 	GameEngine::Get().Init(hwnd, width, height, windowed);
 
-	//uv값 추가
 	vector<Vertex> vec(4);	
 	vec[0].pos = XMFLOAT3(-0.5f, 0.5f, 0.5f);
 	vec[0].color = XMFLOAT4(1.f, 0.f, 0.f, 1.f);
@@ -46,14 +45,40 @@ void MainGame::Init(HWND hwnd, int width, int height, bool windowed)
 void MainGame::Update()
 {
 	GameEngine::Get().RenderBegin();
+	GameEngine::Get().Update();
 
 	shader->Update();
 
 	{
-		XMFLOAT4 transform(0.f, 0.f, 0.f, 0.f);
+		static XMFLOAT4 transform = {};
+
+		//DeltaTime값 가져오기
+		float deltaTime = GameEngine::Get().GetTimer()->GetDeltaTime();
+
+		//각 인풋에 deltaTime을 곱해줍니다 
+		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::W))
+		{
+			transform.y += 1.f * deltaTime;
+		}
+
+		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::S))
+		{
+			transform.y -= 1.f * deltaTime;
+		}
+
+		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::A))
+		{
+			transform.x -= 1.f * deltaTime;
+		}
+
+		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::D))
+		{
+			transform.x += 1.f * deltaTime;
+		}
+
+		
 		mesh->SetTransform(transform);
 
-		//Texture 추가
 		mesh->SetTexture(texture);
 
 		mesh->Render();
