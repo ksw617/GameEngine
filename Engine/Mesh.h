@@ -1,6 +1,6 @@
 #pragma once
-//Texture 전방선언
-class Texture;
+//Material 전방선언
+class Material;
 
 class Mesh
 {
@@ -15,16 +15,22 @@ private:
 
 	XMFLOAT4 transform = {};
 
-	//Texture 스마트 포인터 
-	shared_ptr<Texture> texture = {};
+	//Texture 제거 
+	//shared_ptr<Texture> texture = {};
+	//Material 추가
+	shared_ptr<Material> material = {};
+	
 public:
 	void Init(const vector<Vertex>& vertexBuffer, const vector<UINT32>& indexBuffer);
 	void Render();
 
 	void SetTransform(const XMFLOAT4& _transform) { transform = _transform; }
 
-	//Texture set 함수
-	void SetTexture(shared_ptr<Texture> _texture) { texture = _texture; }
+	//Texture set 제거
+	//void SetTexture(shared_ptr<Texture> _texture) { texture = _texture; }
+
+	//Material set 추가
+	void SetMaterial(shared_ptr<Material> _material) { material = _material; }
 
 private:
 	void CreateVertexBuffer(const vector<Vertex>& buffer);

@@ -1,10 +1,12 @@
 #include "pch.h"
 #include "MainGame.h"
 #include <GameEngine.h>
+#include <Material.h>  // Material추가
 
 shared_ptr<Mesh> mesh = make_shared<Mesh>();
-shared_ptr<Shader> shader = make_shared<Shader>();
-shared_ptr<Texture> texture = make_shared<Texture>(); 
+//쉐이더랑 Texture Matreial을 통해 처리
+//shared_ptr<Shader> shader = make_shared<Shader>();
+//shared_ptr<Texture> texture = make_shared<Texture>(); 
 
 void MainGame::Init(HWND hwnd, int width, int height, bool windowed)
 {
@@ -35,9 +37,23 @@ void MainGame::Init(HWND hwnd, int width, int height, bool windowed)
 	indexVertex.push_back(3);
 
 	mesh->Init(vec, indexVertex);
-	shader->Init(L"..\\Resources\\Shader\\Default.hlsli");
 
+	//로컬에다가
+	shared_ptr<Shader> shader = make_shared<Shader>();
+	shared_ptr<Texture> texture = make_shared<Texture>();
+
+	shader->Init(L"..\\Resources\\Shader\\Default.hlsli");
 	texture->Init(L"..\\Resources\\Texture\\DirectX.png");
+
+	//Material 추가
+	shared_ptr<Material> material = make_shared<Material>();
+	//초기화
+	material->SetShader(shader);
+	material->SetFloat(0, 0.1f);
+	material->SetFloat(1, 0.3f);
+	material->SetFloat(2, 0.4f);
+	material->SetTexture(0, texture);
+	mesh->SetMaterial(material);
 
 	GameEngine::Get().GetCmdQueue()->WaitSync();
 }
@@ -47,15 +63,13 @@ void MainGame::Update()
 	GameEngine::Get().RenderBegin();
 	GameEngine::Get().Update();
 
-	shader->Update();
+	//제거
+	//shader->Update();
 
 	{
 		static XMFLOAT4 transform = {};
-
-		//DeltaTime값 가져오기
 		float deltaTime = GameEngine::Get().GetTimer()->GetDeltaTime();
 
-		//각 인풋에 deltaTime을 곱해줍니다 
 		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::W))
 		{
 			transform.y += 1.f * deltaTime;
@@ -79,7 +93,8 @@ void MainGame::Update()
 		
 		mesh->SetTransform(transform);
 
-		mesh->SetTexture(texture);
+		//제거
+		//mesh->SetTexture(texture);
 
 		mesh->Render();
 	}

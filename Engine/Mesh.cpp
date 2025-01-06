@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Mesh.h"
 #include "GameEngine.h"
+#include "Material.h"  // Material 추가
 
 
 void Mesh::Init(const vector<Vertex>& vertexBuffer, const vector<UINT32>& indexBuffer)
@@ -71,11 +72,11 @@ void Mesh::Render()
 
 
 	GameEngine::Get().GetCmdQueue()->GetCmdList()->IASetIndexBuffer(&indexBufferView);
+	GameEngine::Get().GetConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM)->PushData(&transform, sizeof(transform));
 
-	GameEngine::Get().GetConstBuffer()->PushData(&transform, sizeof(transform));
-
-	//SRV Register에 테스처 등록
-	GameEngine::Get().GetTableDesc()->SetSRV(texture->GetCpuHandle(), SRV_REGISTER::t0);
+	//Matreial Update를 통해 SRV에 texture 업데이트
+	//GameEngine::Get().GetTableDesc()->SetSRV(texture->GetCpuHandle(), SRV_REGISTER::t0);
+	material->Update();
 
 	GameEngine::Get().GetTableDesc()->CommitTable();
 
