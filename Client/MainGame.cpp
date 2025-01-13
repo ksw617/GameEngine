@@ -1,12 +1,16 @@
 #include "pch.h"
 #include "MainGame.h"
 #include <GameEngine.h>
-#include <Material.h>  // Material추가
+#include <Material.h> 
 
-shared_ptr<Mesh> mesh = make_shared<Mesh>();
-//쉐이더랑 Texture Matreial을 통해 처리
-//shared_ptr<Shader> shader = make_shared<Shader>();
-//shared_ptr<Texture> texture = make_shared<Texture>(); 
+//Mesh 제거
+//shared_ptr<Mesh> mesh = make_shared<Mesh>();
+
+#include <GameObject.h> // GameObject 추가 
+#include <MeshFilter.h>	// MeshFilter 추가
+
+// 대신에 GameObject 만듬
+shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 
 void MainGame::Init(HWND hwnd, int width, int height, bool windowed)
 {
@@ -36,24 +40,46 @@ void MainGame::Init(HWND hwnd, int width, int height, bool windowed)
 	indexVertex.push_back(2);
 	indexVertex.push_back(3);
 
-	mesh->Init(vec, indexVertex);
+	//mesh->Init(vec, indexVertex);
+	//GameObject 초기화 호출 Transform 할당
+	gameObject->Init();
 
-	//로컬에다가
-	shared_ptr<Shader> shader = make_shared<Shader>();
-	shared_ptr<Texture> texture = make_shared<Texture>();
+	//meshFilter 만들어 주고
+	shared_ptr<MeshFilter> meshFilter = make_shared<MeshFilter>();
 
-	shader->Init(L"..\\Resources\\Shader\\Default.hlsli");
-	texture->Init(L"..\\Resources\\Texture\\DirectX.png");
+	{
+		//mesh를 여기다 만들어 줄꺼임
+		shared_ptr<Mesh> mesh = make_shared<Mesh>();
+		//mesh초기화
+		mesh->Init(vec, indexVertex);
 
-	//Material 추가
-	shared_ptr<Material> material = make_shared<Material>();
-	//초기화
-	material->SetShader(shader);
-	material->SetFloat(0, 0.1f);
-	material->SetFloat(1, 0.3f);
-	material->SetFloat(2, 0.4f);
-	material->SetTexture(0, texture);
-	mesh->SetMaterial(material);
+		//meshFilter에 mesh 추가
+		meshFilter->SetMesh(mesh);
+	}
+
+	{
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shared_ptr<Texture> texture = make_shared<Texture>();
+
+		shader->Init(L"..\\Resources\\Shader\\Default.hlsli");
+		texture->Init(L"..\\Resources\\Texture\\DirectX.png");
+
+		shared_ptr<Material> material = make_shared<Material>();
+	
+		material->SetShader(shader);
+		material->SetFloat(0, 0.1f);
+		material->SetFloat(1, 0.3f);
+		material->SetFloat(2, 0.4f);
+		material->SetTexture(0, texture);
+
+		//MeshFilter에 Material추가
+		meshFilter->SetMaterial(material);
+
+	}
+
+	//gameObject에 MeshFilter 컴퍼넌트 추가
+	gameObject->AddComponent(meshFilter);
 
 	GameEngine::Get().GetCmdQueue()->WaitSync();
 }
@@ -63,41 +89,8 @@ void MainGame::Update()
 	GameEngine::Get().RenderBegin();
 	GameEngine::Get().Update();
 
-	//제거
-	//shader->Update();
-
-	{
-		static XMFLOAT4 transform = {};
-		float deltaTime = GameEngine::Get().GetTimer()->GetDeltaTime();
-
-		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::W))
-		{
-			transform.y += 1.f * deltaTime;
-		}
-
-		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::S))
-		{
-			transform.y -= 1.f * deltaTime;
-		}
-
-		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::A))
-		{
-			transform.x -= 1.f * deltaTime;
-		}
-
-		if (GameEngine::Get().GetInput()->GetButton(KEY_TYPE::D))
-		{
-			transform.x += 1.f * deltaTime;
-		}
-
-		
-		mesh->SetTransform(transform);
-
-		//제거
-		//mesh->SetTexture(texture);
-
-		mesh->Render();
-	}
+	//gameObject 업데이트 실행
+	gameObject->Update();
 
 	GameEngine::Get().RenderEnd();
 }

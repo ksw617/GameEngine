@@ -1,45 +1,52 @@
 #pragma once
 
-//컴포넌트 타이을 정의하는 열거형
+
 enum class COMPONENT_TYPE : UINT8
 {
-	TRANSFORM,		//변환 컴포넌트
-	MESH_FILTER,	//메쉬 필터 컴포넌트
+	TRANSFORM,		
+	MESH_FILTER,	
 
-	//.... 추가예정
-	END,			//컴포넌트 타입의 끝
+	END,			
 
 };
 
 enum 
 {
-	//고정 컴포넌트 갯수를 정의
-	FIXED_COMPONENT_COUNT = static_cast<UINT8>(COMPONENT_TYPE::END) // 컴포넌트 타입의 총 갯수
-
+	FIXED_COMPONENT_COUNT = static_cast<UINT8>(COMPONENT_TYPE::END)
 };
 
-//GameObject전방선언
+class Transform;
 class GameObject;
 
 class Component
 {
 public:
-	//컴포넌트 생성자
 	Component(COMPONENT_TYPE _type);
-
-	//컴포넌트 소멸자
 	virtual ~Component();
 protected:
-	COMPONENT_TYPE type; // 컴포넌트 타입
-
-	weak_ptr<GameObject> gameObject;		// 이 컴포넌트가 속한 게임 객체
+	COMPONENT_TYPE type; 
+	weak_ptr<GameObject> gameObject;	
 private:
-
-	//GameObject 클라스가 private 맴버에 접근 할수 있도록 설정
 	friend GameObject;
-
-	//GameObject Set해주는 함수
 	void SetGameObject(shared_ptr<GameObject> _gameObject) { gameObject = _gameObject; }
-
+public:
+	//컴퍼넌트 타입을 반환해주는 Get 함수
+	COMPONENT_TYPE GetType() const { return type; }
+	//컴퍼넌트를 들고 있는 게임오브젝트가 유효한지 확인 하는 함수
+	bool IsValid() { return gameObject.expired() == false; }
+public:
+	//Start전에 한번 호출
+	virtual void Awake() {}
+	//Update 이전에 한번 호출
+	virtual void Start() {}
+	//매 프레임 마다 업데이트 되는 함수
+	virtual void Update() {}
+	//매 프레임 후반에 업데이트 되는 함수
+	virtual void LateUpdate() {}
+public:
+	//GameObject Get함수
+	shared_ptr<GameObject> GetGameObject();
+	//Transform Get함수
+	shared_ptr<Transform> GetTransfrom();
 };
 
