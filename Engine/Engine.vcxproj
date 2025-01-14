@@ -179,6 +179,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SimpleMath.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="TableDescriptor.h" />
     <ClInclude Include="Texture.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SimpleMath.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="TableDescriptor.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -217,6 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shader\Default.hlsli" />
+    <None Include="SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />

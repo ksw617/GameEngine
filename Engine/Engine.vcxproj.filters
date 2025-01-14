@@ -90,6 +90,9 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="SimpleMath.cpp">
+      <Filter>Pch</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -165,10 +168,16 @@
     <ClInclude Include="SceneManager.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="SimpleMath.h">
+      <Filter>Pch</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shader\Default.hlsli">
       <Filter>Resources\Shader</Filter>
+    </None>
+    <None Include="SimpleMath.inl">
+      <Filter>Pch</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
