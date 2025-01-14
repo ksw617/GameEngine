@@ -1,20 +1,24 @@
 #pragma once
-#include "Component.h" // Component 속성 상속 받기 위해서
+#include "Component.h"
 
-//변환 행렬을 저장하는 구조체
-struct TransformMatrix
+class Transform	: public Component
 {
-	XMFLOAT4 offset;
-};
+private:
+	//부모를 기준으로 변환 정보들을 계산
+	Vector3 localPosition = {}; //로컬 위치
+	Vector3 localRotation = {}; //로컬 회전
+	Vector3 localScacle = { 1.f, 1.f, 1.f };//로컬 크기(기본값 : 1.f, 1.f, 1.f)
 
-class Transform	: public Component	//Component 상속
-{
+	Matrix matrixLocal = {};	//로컬 변환 행렬
+	Matrix matrixWorld = {};	//월드 변환 행렬
+
+	weak_ptr<Transform> parent; // 부모 Transform을 가르키는 weak_ptr
 public:
-	//생성자
-	//컴포넌트 타입을 TRANSFORM으로 설정하여 Component 생성자 호출
 	Transform() : Component(COMPONENT_TYPE::TRANSFORM) {}
-
-	//소멸자
 	virtual ~Transform() {}
+
+public:
+	//최종 업데이트 함수(매 프리임 마다 마지막에 호출됨)
+	virtual void FinalUpdate() override;
 };
 

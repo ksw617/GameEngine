@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameEngine.h"
-#include "Material.h"  // Material 포함
+#include "Material.h" 
+#include "SceneManager.h" // SceneManager 추가
 
 void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 {
@@ -18,8 +19,8 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	rootSignature = make_shared<RootSignature>();
 	tableDesc = make_shared<TableDescriptor>();
 	depthStencilBuffer = make_shared<DepthStencilBuffer>(); 	
+	
 	input = make_shared<Input>();
-
 	timer = make_shared<Timer>();
 
 	device->Init();
@@ -28,14 +29,11 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	rootSignature->Init(device->GetDevice());
 
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(XMFLOAT4), 256);
-	//Material 용 ConstnatBuffer
 	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(MaterialParams), 256);
 
 	tableDesc->Init(256);
 
 	input->Init(hwnd);
-
-	//초기화
 	timer->Init();
 
 	ResizeWindow(_width, _height);
@@ -44,9 +42,11 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 
 void GameEngine::Render()
 {
-
 	RenderBegin();
  
+	//SceneManager Update 호출
+	SceneManager::Get().Update();
+
 	RenderEnd();
 
 }
@@ -55,6 +55,10 @@ void GameEngine::Update()
 {
 	input->Update();
 	timer->Update();
+	
+	//GameEngine Render 실행
+	Render();
+
 	ShowFPS();
 }
 

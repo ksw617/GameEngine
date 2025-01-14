@@ -1,17 +1,10 @@
 
-cbuffer TEST_B0 : register(b0)
+//TRANSFORM 매개변수를 정의하는 상수 버퍼(b1 레지스터에 바인딩)
+cbuffer TRANSFORM_PARAMS : register(b0)
 {
-    float4 offset0; 
+    row_major matrix mat;
 }
 
-
-
-//cbuffer TEST_B1 : register(b1)
-//{
-//    float4 offset1;
-//}
-
-//Material 매개변수를 정의하는 상수 버퍼(b1 레지스터에 바인딩)
 cbuffer MATERIAL_PARAMS : register(b1)
 {
     int int_0;
@@ -27,7 +20,6 @@ cbuffer MATERIAL_PARAMS : register(b1)
     float float_4;
 }
 
-//텍스처 샘플러의 정의(t0~04 레지스터에 바인딩)
 Texture2D tex_0 : register(t0);
 Texture2D tex_1 : register(t1);
 Texture2D tex_2 : register(t2);
@@ -56,15 +48,11 @@ struct VS_OUT
 VS_OUT VS_Main(VS_IN input)
 {
     VS_OUT output = (VS_OUT) 0; 
-    output.pos = float4(input.pos, 1.f);
-    //output.pos += offset0; 
-    //TEST 용
-    output.pos.x += float_0;
-    output.pos.y += float_1;
-    output.pos.z += float_2;
-    
+
+    //행렬(Matrix)을 이용하여 input의 위치값을 곱합
+    output.pos = mul(float4(input.pos, 1.f), mat);
+
     output.color = input.color;
-    
     output.uv = input.uv; 
    
     return output;

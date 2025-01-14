@@ -18,6 +18,8 @@ using namespace std;
 #include "d3dx12.h"
 #include <d3d12.h>
 
+#include "SimpleMath.h"
+
 #include <wrl.h>
 #include <d3dcompiler.h>
 #include <dxgi.h>
@@ -30,6 +32,7 @@ using namespace std;
 
 using namespace DirectX;
 using namespace DirectX::PackedVector;
+using namespace DirectX::SimpleMath;
 using namespace Microsoft::WRL;
 
 #ifdef _DEBUG 
@@ -39,20 +42,23 @@ using namespace Microsoft::WRL;
 #endif 
 
 
-
 #pragma comment(lib, "d3d12")
 #pragma comment(lib, "dxgi")
 #pragma comment(lib, "dxguid")
 #pragma comment(lib, "d3dcompiler")
 
 
+//Matrix로 변경
+struct TransformMatrix
+{
+	Matrix offset;
+};
+
 struct Vertex
 {
-	XMFLOAT3 pos;
-	XMFLOAT4 color;
-
-	//uv값 추가
-	XMFLOAT2 uv;
+	Vector3 pos;
+	Vector4 color;
+	Vector2 uv;
 
 };
 

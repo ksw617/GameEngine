@@ -4,7 +4,10 @@
 enum class COMPONENT_TYPE : UINT8
 {
 	TRANSFORM,		
-	MESH_FILTER,	
+	MESH_FILTER,
+
+	MONO_BEHAVIOUR,
+
 
 	END,			
 
@@ -12,7 +15,7 @@ enum class COMPONENT_TYPE : UINT8
 
 enum 
 {
-	FIXED_COMPONENT_COUNT = static_cast<UINT8>(COMPONENT_TYPE::END)
+	FIXED_COMPONENT_COUNT = static_cast<UINT8>(COMPONENT_TYPE::END)	- 1 
 };
 
 class Transform;
@@ -30,23 +33,18 @@ private:
 	friend GameObject;
 	void SetGameObject(shared_ptr<GameObject> _gameObject) { gameObject = _gameObject; }
 public:
-	//컴퍼넌트 타입을 반환해주는 Get 함수
 	COMPONENT_TYPE GetType() const { return type; }
-	//컴퍼넌트를 들고 있는 게임오브젝트가 유효한지 확인 하는 함수
 	bool IsValid() { return gameObject.expired() == false; }
 public:
-	//Start전에 한번 호출
 	virtual void Awake() {}
-	//Update 이전에 한번 호출
 	virtual void Start() {}
-	//매 프레임 마다 업데이트 되는 함수
 	virtual void Update() {}
-	//매 프레임 후반에 업데이트 되는 함수
 	virtual void LateUpdate() {}
+
+	//FinalUpdate : 마지막 시스템상에서 Update하기 위해
+	virtual void FinalUpdate() {}
 public:
-	//GameObject Get함수
 	shared_ptr<GameObject> GetGameObject();
-	//Transform Get함수
 	shared_ptr<Transform> GetTransfrom();
 };
 
