@@ -3,6 +3,10 @@
 #include "Transform.h"
 #include "MonoBehaviour.h"
 
+//추가
+#include "MeshFilter.h"
+#include "Camera.h"
+
 GameObject::GameObject()
 {
 }
@@ -92,7 +96,6 @@ void GameObject::LateUpdate()
 
 void GameObject::FinalUpdate()
 {
-    //모든 컴포넌트를 순회하며 FinalUpdate 함수 호출
     for (shared_ptr<Component>& component : components)
     {
         if (component)
@@ -102,7 +105,39 @@ void GameObject::FinalUpdate()
 
 shared_ptr<Transform> GameObject::GetTransform()
 {
-    UINT8 index = static_cast<UINT8>(COMPONENT_TYPE::TRANSFORM);
+    //Transform 타입의 컴포넌트를 가져옴
+    shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::TRANSFORM);
 
-    return static_pointer_cast<Transform>(components[index]);
+    //component 포인터를 transform 포인터로 캐스팅하여 반환
+    return static_pointer_cast<Transform>(component);
+}
+
+shared_ptr<MeshFilter> GameObject::GetMeshFilter()
+{
+    //Transform 타입의 컴포넌트를 가져옴
+    shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::MESH_FILTER);
+
+    //component 포인터를 MeshFilter 포인터로 캐스팅하여 반환
+    return static_pointer_cast<MeshFilter>(component);
+}
+
+shared_ptr<Camera> GameObject::GetCamera()
+{
+    //Transform 타입의 컴포넌트를 가져옴
+    shared_ptr<Component> component = GetFixedComponent(COMPONENT_TYPE::CAMERA);
+
+    //component 포인터를 Camera 포인터로 캐스팅하여 반환
+    return static_pointer_cast<Camera>(component);
+}
+
+shared_ptr<Component> GameObject::GetFixedComponent(COMPONENT_TYPE type)
+{
+    //컴포넌트 타입을 정수 인덱스로 변환
+    UINT8 index = static_cast<UINT8>(type);
+
+    //인덱스가 정해진 컴포넌트의 갯수를 초과하지 않는지 확인
+    assert(index < FIXED_COMPONENT_COUNT);
+    
+    //지정된 인덱스의 컴포넌트를 반환
+    return components[index];
 }

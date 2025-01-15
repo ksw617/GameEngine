@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "GameEngine.h"
 #include "Material.h" 
-#include "SceneManager.h" // SceneManager 추가
+#include "SceneManager.h" 
 
 void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 {
@@ -44,8 +44,8 @@ void GameEngine::Render()
 {
 	RenderBegin();
  
-	//SceneManager Update 호출
-	SceneManager::Get().Update();
+	//SceneManager Render 호출
+	SceneManager::Get().Render();
 
 	RenderEnd();
 
@@ -56,7 +56,9 @@ void GameEngine::Update()
 	input->Update();
 	timer->Update();
 	
-	//GameEngine Render 실행
+	//SceneManager Update 호출
+	SceneManager::Get().Update();
+
 	Render();
 
 	ShowFPS();

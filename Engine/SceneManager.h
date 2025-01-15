@@ -26,10 +26,11 @@ public:
 public:
 	void LoadScene(wstring sceneName);
 	void Update();
+	//Render 함수 추가
+	void Render();
 
 
 private:
-	//Test용
-	shared_ptr<Scene> LoadTestScene();
+	shared_ptr<Scene> LoadSampleScene();
 };
 

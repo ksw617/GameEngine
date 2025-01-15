@@ -5,6 +5,7 @@ enum class COMPONENT_TYPE : UINT8
 {
 	TRANSFORM,		
 	MESH_FILTER,
+	CAMERA, // Camera Component추가
 
 	MONO_BEHAVIOUR,
 
@@ -40,8 +41,6 @@ public:
 	virtual void Start() {}
 	virtual void Update() {}
 	virtual void LateUpdate() {}
-
-	//FinalUpdate : 마지막 시스템상에서 Update하기 위해
 	virtual void FinalUpdate() {}
 public:
 	shared_ptr<GameObject> GetGameObject();

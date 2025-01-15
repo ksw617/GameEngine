@@ -2,13 +2,14 @@
 #include "MeshFilter.h"
 #include "Mesh.h"
 #include "Material.h"
+#include "Transform.h" // 추가
 
 void MeshFilter::Render()
 {
-	//Material Update 함수 호출
-	material->Update();
+	//해당 Transform의 PushData 실행
+	GetTransfrom()->PushData();
 
-	//Mesh 랜더
+	material->Update();
 	mesh->Render();
 
 }

@@ -93,6 +93,9 @@
     <ClCompile Include="SimpleMath.cpp">
       <Filter>Pch</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>GameObject\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -170,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="SimpleMath.h">
       <Filter>Pch</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>GameObject\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

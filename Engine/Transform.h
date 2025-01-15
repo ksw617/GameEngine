@@ -1,24 +1,41 @@
 #pragma once
 #include "Component.h"
 
-class Transform	: public Component
+class Transform : public Component
 {
 private:
-	//부모를 기준으로 변환 정보들을 계산
-	Vector3 localPosition = {}; //로컬 위치
-	Vector3 localRotation = {}; //로컬 회전
-	Vector3 localScacle = { 1.f, 1.f, 1.f };//로컬 크기(기본값 : 1.f, 1.f, 1.f)
+	Vector3 localPosition = {};
+	Vector3 localRotation = {};
+	Vector3 localScale = { 1.f, 1.f, 1.f };
 
-	Matrix matrixLocal = {};	//로컬 변환 행렬
-	Matrix matrixWorld = {};	//월드 변환 행렬
+	Matrix matrixLocal = {};
+	Matrix matrixWorld = {};
 
-	weak_ptr<Transform> parent; // 부모 Transform을 가르키는 weak_ptr
+	weak_ptr<Transform> parent;
 public:
 	Transform() : Component(COMPONENT_TYPE::TRANSFORM) {}
 	virtual ~Transform() {}
+public:
+	Vector3 GetLocalPosition() const { return localPosition; }
+	Vector3 GetLocalRotation() const { return localRotation; }
+	Vector3 GetLocalScale() const { return localScale; }
+	Matrix GetLocalToWorldMatrix() const { return matrixWorld; }
+	Vector3 GetWorldPosition() const { return matrixWorld.Translation(); }
+	Vector3 GetRight() const { return matrixWorld.Right(); }
+	Vector3 GetUp() const { return matrixWorld.Up(); }
+	Vector3 GetLook() const { return matrixWorld.Backward(); }
+	weak_ptr<Transform> GetParent() { return parent; }
 
 public:
-	//최종 업데이트 함수(매 프리임 마다 마지막에 호출됨)
+	void SetParent(shared_ptr<Transform> _parent) { parent = _parent; }
+	void SetLocalPosition(const Vector3 position) { localPosition = position; }
+	void SetLocalRotation(const Vector3 rotation) { localRotation = rotation; }
+	void SetLocalScale(const Vector3 scale) { localScale = scale; }
+
+public:
 	virtual void FinalUpdate() override;
+public:
+	//데이터를 최종적으로 GPU에 건내주기 위해
+	void PushData();
 };
 

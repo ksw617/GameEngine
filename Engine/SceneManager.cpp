@@ -1,19 +1,16 @@
 #include "pch.h"
 #include "SceneManager.h"
 #include "Scene.h"
-
-//추가
 #include "GameEngine.h"
 #include "Material.h"
-
 #include "GameObject.h"
 #include "MeshFilter.h"
-
+#include "Camera.h" 
+#include "Transform.h"  // 호출
 
 void SceneManager::LoadScene(wstring sceneName)
 {
-	//Test용
-	currentScene = LoadTestScene();
+	currentScene = LoadSampleScene();
 
 	currentScene->Awake();
 	currentScene->Start();
@@ -26,15 +23,32 @@ void SceneManager::Update()
 	{	  
 		currentScene->Update();
 		currentScene->LateUpdate();
+		currentScene->FinalUpdate();
 	}
 }
 
-shared_ptr<Scene> SceneManager::LoadTestScene()
+void SceneManager::Render()
 {
-	//테스트용 씬 만들기
-	shared_ptr<Scene> testScene = make_shared<Scene>();//Test scene 만들기
 
-	//테스트용 게임오브젝트 만들기
+	if (currentScene == nullptr)
+		return;
+
+	const vector<shared_ptr<GameObject>>& gameObjects = currentScene->GetGameObjets();
+
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->GetCamera() == nullptr)
+			continue;
+
+		gameObject->GetCamera()->Render();
+	}
+
+
+}
+
+shared_ptr<Scene> SceneManager::LoadSampleScene()
+{
+	shared_ptr<Scene> testScene = make_shared<Scene>();
 	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 
 	vector<Vertex> vec(4);
@@ -62,6 +76,16 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	indexVertex.push_back(3);
 
 	gameObject->Init();
+
+	//gameObject에서 Transform 가져와서
+	shared_ptr<Transform> transform = gameObject->GetTransform();
+
+	//transform 위치값 설정
+	transform->SetLocalPosition(Vector3(0.f, 100.f, 200.f));
+
+	//tranform의 크기값 설정
+	transform->SetLocalScale(Vector3(100.f, 100.f, 1.f));
+
 	shared_ptr<MeshFilter> meshFilter = make_shared<MeshFilter>();
 
 	{
@@ -90,12 +114,23 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 	}
 
-	//테스트용 게임오브젝트에 meshFilter 추가
 	gameObject->AddComponent(meshFilter);
-
-	//테스트용 씬에다가 gameObject 추가
 	testScene->AddGameObject(gameObject);
 
-	//테스트용 씬 반환
+	//새로운 게임 객체를 생성(카메라 역할)
+	shared_ptr<GameObject> camera = make_shared<GameObject>();
+
+	//Transform 컴포넌트를 추가(위치, 회전, 스케일 정보를 관리)
+	camera->AddComponent(make_shared<Transform>());
+
+	//Camera 컴포넌트를 추가(near = 0.3f, far = 1000.f, Fov = 45도)
+	camera->AddComponent(make_shared<Camera>());
+
+	//카메라 위치를 설정(로컬 좌표계에서(0f, 100f, 0f) 위치로 설정)
+	camera->GetTransform()->SetLocalPosition(Vector3(0.f, 100.f, 0.f));
+
+	//카메라 객체를 씬에 추가
+	testScene->AddGameObject(camera);
+
 	return testScene;
 }
