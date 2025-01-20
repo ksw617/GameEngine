@@ -19,6 +19,9 @@
     <Filter Include="GameObject\Component">
       <UniqueIdentifier>{a101e913-cf0d-46bd-8b87-70f4fcabe959}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Test">
+      <UniqueIdentifier>{5ae8c0d6-57aa-427a-aacd-52d32c59db2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -96,6 +99,7 @@
     <ClCompile Include="Camera.cpp">
       <Filter>GameObject\Component</Filter>
     </ClCompile>
+    <ClCompile Include="CameraMoveTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -177,6 +181,7 @@
     <ClInclude Include="Camera.h">
       <Filter>GameObject\Component</Filter>
     </ClInclude>
+    <ClInclude Include="CameraMoveTest.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shader\Default.hlsli">
