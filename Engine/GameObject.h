@@ -2,14 +2,12 @@
 #include "Component.h" 
 
 class Transform;
-
-//전방 선언
 class MeshFilter;
 class Camera;
-
 class MonoBehaviour;
 
-class GameObject : public enable_shared_from_this<GameObject> 
+//Object 상속
+class GameObject : public enable_shared_from_this<GameObject>, public Object 
 {
 private:
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> components;
@@ -27,14 +25,8 @@ public:
 	void FinalUpdate();
 public:
 	shared_ptr<Transform> GetTransform();
-
-	//MeshFilter Get 함수
 	shared_ptr<MeshFilter> GetMeshFilter();
-
-	//Camera Get 함수
 	shared_ptr<Camera> GetCamera();
-
-	//필요한 컴포넌트들만 반환
 	shared_ptr<Component> GetFixedComponent(COMPONENT_TYPE type);
 
 public:

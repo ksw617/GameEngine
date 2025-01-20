@@ -61,7 +61,7 @@ void Input::Update()
 			//이전 프레임에서 키를 누른 상태라면 UP, 그렇지 않으면 NONE
 			if (state == KEY_STATE::PRESS || state == KEY_STATE::DOWN)
 			{
-				state == KEY_STATE::UP;
+				state = KEY_STATE::UP;
 			}
 			else
 			{

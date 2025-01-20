@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Singleton.h"  // singleton 호출
 #include "Device.h"
 #include "CommandQueue.h"
 #include "SwapChain.h"
@@ -13,20 +13,13 @@
 #include "Input.h"  
 #include "Timer.h" 
 
-class GameEngine
+class GameEngine : public Singleton<GameEngine>
 {
-public:
-	static GameEngine& Get()
-	{
-		static GameEngine instance;
-		return instance;
-	}
+	//Singleton 클라스가 private 생성자에 접근 할수 있게
+	friend class Singleton<GameEngine>;
 private:
 	GameEngine() = default;
 	~GameEngine() = default;
-public:
-	GameEngine(const GameEngine&) = delete;
-	GameEngine& operator=(const GameEngine&) = delete;
 
 private:
 	HWND hwnd; 
@@ -58,8 +51,6 @@ public:
 
 	shared_ptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type) { return constBuffers[static_cast<UINT8>(type)]; }
 public:
-	//Get함수
-	//화면 크기 받아오기
 	int GetWidth() const { return width; }
 	int GetHeight() const { return height; }
 

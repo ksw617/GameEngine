@@ -48,17 +48,22 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "d3dcompiler")
 
 
-//Matrix로 변경
 struct TransformMatrix
 {
 	Matrix offset;
 };
 
+//수정
 struct Vertex
 {
+	Vertex() {}
+	Vertex(Vector3 p, Vector2 u, Vector3 n, Vector3 t)
+		: pos(p), uv(u), normal(n), tangent(t) {}
+
 	Vector3 pos;
-	Vector4 color;
 	Vector2 uv;
+	Vector3 normal;
+	Vector3 tangent;
 
 };
 
