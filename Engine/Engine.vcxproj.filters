@@ -111,6 +111,9 @@
     <ClCompile Include="Singleton.cpp">
       <Filter>Pch</Filter>
     </ClCompile>
+    <ClCompile Include="Resources.cpp">
+      <Filter>Object\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -140,7 +143,6 @@
     <ClInclude Include="Mesh.h">
       <Filter>Object\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Shader.h">
       <Filter>Object\Resources</Filter>
     </ClInclude>
@@ -201,6 +203,10 @@
     <ClInclude Include="Singleton.h">
       <Filter>Pch</Filter>
     </ClInclude>
+    <ClInclude Include="Resources.h">
+      <Filter>Object\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shader\Default.hlsli">

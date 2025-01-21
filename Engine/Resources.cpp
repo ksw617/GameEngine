@@ -92,3 +92,72 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
 	return mesh; // 매쉬 반환
 
 }
+
+shared_ptr<Mesh> Resources::LoadSphereMesh()
+{
+	//이미 "Sphere"라는 키로 로드된 매쉬가 있는지 확인
+	shared_ptr<Mesh> findMesh = GetResource<Mesh>(L"Sphere");
+	if (findMesh)
+		return findMesh;	// 이미 존재하면 해당 매쉬를 반환
+
+	float radius = 0.5f;	// 구의 반지름 설정
+	UINT32 stackCount = 20; // 가로 방향으로의 분할 수 설정
+	UINT32 sliceCount = 20; // 세로 방향으로의 분할 수 설정
+
+	vector<Vertex> vec; // 정점을 저장할 벡터 생성
+
+	Vertex v; // 정점 구조체 인스턴스
+
+	//북극 정점 설정 
+	v.pos = Vector3(0.0f, radius, 0.0f); //북극 정점의 위치
+	v.uv = Vector2(0.5f, 0.0f);	// 북극 정점의 텍스처 좌표
+	v.normal = v.pos; // 노멀 벡터 설정
+	v.normal.Normalize(); // 노멀 벡터 정규화
+	v.tangent = Vector3(1.0f, 0.0f, 1.0f); // 접선 벡터 설정
+	vec.push_back(v); // 벡터에 북극 정점을 추가
+
+	float stackAngle = XM_PI / stackCount;  // 스택 간의 각도
+	float sliceAngle = XM_2PI / sliceCount; // 슬라이스 간의 각도
+
+	float deltaU = 1.f / static_cast<float>(sliceCount); // U 좌표의 변화량
+	float deltaV = 1.f / static_cast<float>(stackCount); // V 좌표의 변화량
+
+	//각 스택마다 정점을 계산 (북극과 남극을 제외한 부분)
+	for (UINT32 y = 1; y < stackCount - 1; y++)
+	{
+		float phi = y * stackAngle; // 현재 스택의 각도
+
+		//각 슬라이스 마다 정점을 계산
+		for (UINT32 x = 0; x <= sliceCount; x++)
+		{
+			float theta = x * sliceAngle; // 현재 슬라이스의 각도
+
+			//정점의 위치 계산
+			v.pos.x = radius * sinf(phi) * cosf(theta);
+			v.pos.y = radius * cosf(phi);
+			v.pos.z = radius * sinf(phi) * sinf(theta);
+
+			//텍스처 좌표 계산
+			v.uv = Vector2(deltaU * x, deltaV * y);
+
+			//노멀 벡터 계산 및 정규화
+			v.normal = v.pos;	  //위치값 적용
+			v.normal.Normalize(); // 정규화
+
+			//접선 벡터 계산 및 정규화
+			v.tangent.x = -radius * sinf(phi) * sinf(theta);
+			v.tangent.y = 0.0f;
+			v.tangent.z = radius * sinf(phi) * cosf(theta);
+			v.tangent.Normalize();
+
+			//정점을 벡터에 추가
+			vec.push_back(v);
+		}
+
+		//남극은 내일
+
+	}
+
+
+
+}

@@ -30,8 +30,11 @@ public:
 	template<typename T>
 	shared_ptr<T> GetResource(const wstring& key);
 public:
-	//큐브 로드
+
 	shared_ptr<Mesh> LoadCubeMesh();
+
+	//구 로드
+	shared_ptr<Mesh> LoadSphereMesh();
 };
 
 template<typename T>
@@ -69,7 +72,7 @@ inline shared_ptr<T> Resources::Load(const wstring& key, const wstring& path)
 
 	auto findIt = keyObjMap.find(key);
 								 
-	if (findIt != KeyObjMap.end())
+	if (findIt != keyObjMap.end())
 		return static_pointer_cast<T>(findIt->second);
 
 	shared_ptr<T> object = make_shared<T>();
@@ -85,7 +88,7 @@ inline bool Resources::Add(const wstring& key, shared_ptr<T> object)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
 
-	KeyObjMap& keyObjMap = resources[static_pointer_cast<UINT8>(objectType)];
+	KeyObjMap& keyObjMap = resources[static_cast<UINT8>(objectType)];
 
 	auto findIt = keyObjMap.find(key);
 
@@ -101,7 +104,7 @@ inline shared_ptr<T> Resources::GetResource(const wstring& key)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
 
-	KeyObjMap& keyObjMap = resources[static_pointer_cast<UINT8>(objectType)];
+	KeyObjMap& keyObjMap = resources[static_cast<UINT8>(objectType)];
 
 	auto findIt = keyObjMap.find(key);
 

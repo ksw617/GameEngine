@@ -1,10 +1,10 @@
 #pragma once
-#include "Singleton.h" //호출
+#include "Singleton.h" 
+
 class Scene;
 
 class SceneManager : public Singleton<SceneManager>
 {
-	//Singleton 클라스가 private 생성자에 접근할수 있게
 	friend class Singleton<SceneManager>;
 private:
 	SceneManager() = default;
