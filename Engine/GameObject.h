@@ -4,9 +4,11 @@
 class Transform;
 class MeshFilter;
 class Camera;
+
+class Light;	// Light 클라스 전방선언
+
 class MonoBehaviour;
 
-//Object 상속
 class GameObject : public enable_shared_from_this<GameObject>, public Object 
 {
 private:
@@ -27,6 +29,7 @@ public:
 	shared_ptr<Transform> GetTransform();
 	shared_ptr<MeshFilter> GetMeshFilter();
 	shared_ptr<Camera> GetCamera();
+	shared_ptr<Light> GetLight();	// Light Get 함수
 	shared_ptr<Component> GetFixedComponent(COMPONENT_TYPE type);
 
 public:

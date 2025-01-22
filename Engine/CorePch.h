@@ -48,7 +48,7 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "d3dcompiler")
 
 
-struct TransformMatrix
+struct TransformParams
 {
 	Matrix offset;
 };

@@ -95,68 +95,120 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
 
 shared_ptr<Mesh> Resources::LoadSphereMesh()
 {
-	//이미 "Sphere"라는 키로 로드된 매쉬가 있는지 확인
 	shared_ptr<Mesh> findMesh = GetResource<Mesh>(L"Sphere");
 	if (findMesh)
-		return findMesh;	// 이미 존재하면 해당 매쉬를 반환
+		return findMesh;	
 
-	float radius = 0.5f;	// 구의 반지름 설정
-	UINT32 stackCount = 20; // 가로 방향으로의 분할 수 설정
-	UINT32 sliceCount = 20; // 세로 방향으로의 분할 수 설정
+	float radius = 0.5f;	
+	UINT32 stackCount = 20;
+	UINT32 sliceCount = 20;
 
-	vector<Vertex> vec; // 정점을 저장할 벡터 생성
+	vector<Vertex> vec; 
 
-	Vertex v; // 정점 구조체 인스턴스
+	Vertex v; 
 
-	//북극 정점 설정 
-	v.pos = Vector3(0.0f, radius, 0.0f); //북극 정점의 위치
-	v.uv = Vector2(0.5f, 0.0f);	// 북극 정점의 텍스처 좌표
-	v.normal = v.pos; // 노멀 벡터 설정
-	v.normal.Normalize(); // 노멀 벡터 정규화
-	v.tangent = Vector3(1.0f, 0.0f, 1.0f); // 접선 벡터 설정
-	vec.push_back(v); // 벡터에 북극 정점을 추가
 
-	float stackAngle = XM_PI / stackCount;  // 스택 간의 각도
-	float sliceAngle = XM_2PI / sliceCount; // 슬라이스 간의 각도
+	v.pos = Vector3(0.0f, radius, 0.0f);
+	v.uv = Vector2(0.5f, 0.0f);
+	v.normal = v.pos;
+	v.normal.Normalize(); 
+	v.tangent = Vector3(1.0f, 0.0f, 1.0f);
+	vec.push_back(v); 
 
-	float deltaU = 1.f / static_cast<float>(sliceCount); // U 좌표의 변화량
-	float deltaV = 1.f / static_cast<float>(stackCount); // V 좌표의 변화량
+	float stackAngle = XM_PI / stackCount; 
+	float sliceAngle = XM_2PI / sliceCount; 
 
-	//각 스택마다 정점을 계산 (북극과 남극을 제외한 부분)
+	float deltaU = 1.f / static_cast<float>(sliceCount); 
+	float deltaV = 1.f / static_cast<float>(stackCount);
+
 	for (UINT32 y = 1; y < stackCount - 1; y++)
 	{
-		float phi = y * stackAngle; // 현재 스택의 각도
+		float phi = y * stackAngle; 
 
-		//각 슬라이스 마다 정점을 계산
 		for (UINT32 x = 0; x <= sliceCount; x++)
 		{
-			float theta = x * sliceAngle; // 현재 슬라이스의 각도
+			float theta = x * sliceAngle;
 
-			//정점의 위치 계산
 			v.pos.x = radius * sinf(phi) * cosf(theta);
 			v.pos.y = radius * cosf(phi);
 			v.pos.z = radius * sinf(phi) * sinf(theta);
 
-			//텍스처 좌표 계산
 			v.uv = Vector2(deltaU * x, deltaV * y);
 
-			//노멀 벡터 계산 및 정규화
-			v.normal = v.pos;	  //위치값 적용
-			v.normal.Normalize(); // 정규화
+			v.normal = v.pos;	 
+			v.normal.Normalize();
 
-			//접선 벡터 계산 및 정규화
 			v.tangent.x = -radius * sinf(phi) * sinf(theta);
 			v.tangent.y = 0.0f;
 			v.tangent.z = radius * sinf(phi) * cosf(theta);
 			v.tangent.Normalize();
 
-			//정점을 벡터에 추가
 			vec.push_back(v);
 		}
 
-		//남극은 내일
-
 	}
+
+		//남극 정점 설정
+		v.pos = Vector3(0.0f, -radius, 0.0f);	//남극 정점의 위치
+		v.uv = Vector2(0.5f, 1.0f);				//남극 정점의 텍스처 좌표
+		v.normal = v.pos;						//노멀 벡터 설정
+		v.normal.Normalize();					//노멀 벡터 정규화
+		v.tangent = Vector3(1.0f, 0.0f, 0.0f);	//접선 벡터 설정
+		vec.push_back(v);						//벡터에 남극 정점 추가
+
+		vector<UINT32> idx; // 인덱스를 저장할 벡터 생성
+
+		//북국 인덱스 설정
+		for(UINT32 i = 0; i <= sliceCount; i++)
+		{
+			//북극에서 각 슬라이스로 연결되는 삼각형을 생성
+			idx.push_back(0); // 북극 정점 인덱스
+			idx.push_back(i + 2);	// 현재 슬라이스의 다음 정점 인덱스
+			idx.push_back(i + 1);	// 현재 슬라이스의 정점 인덱스
+
+		}
+
+		//몸통 인덱스 설정
+		UINT32 ringVertexCount = sliceCount + 1; // 각 고리에 있는 정점의 수
+		for (UINT32 y = 0; y < stackCount - 2; y++)
+		{
+			for (UINT32 x = 0; x < sliceCount; x++)
+			{
+				//현재 고리와 다음 고리를 연결하는 두 개의 삼각형을 생성
+				idx.push_back(1 + y * ringVertexCount + x);			 //현재 고리의 현재 슬라이스 정점
+				idx.push_back(1 + y * ringVertexCount + x + 1);		 //현재 고리의 다음 슬라이스 정점
+				idx.push_back(1 + (y + 1) * ringVertexCount + x);	 //다음 고리의 현재 슬라이스 정점
+
+				idx.push_back(1 + (y + 1) * ringVertexCount + x);	 //다음 고리의 현재 슬라이스 정점
+				idx.push_back(1 + y * ringVertexCount + x + 1);		 //현재 고리의 다음 슬라이스 정점
+				idx.push_back(1 + (y + 1) * ringVertexCount + x + 1);//다음 고리의 다음 슬라이스 정점
+			}
+
+		}
+
+		//남극 인덱스 설정
+		UINT32 bottomIndex = static_cast<UINT32>(vec.size()) - 1; //남극 정점의 인덱스 
+		UINT32 lastRingStartIndex = bottomIndex - ringVertexCount;//마지막 고리의 시작 정점
+
+		for (UINT32 i = 0; i < sliceCount; i++)
+		{
+			//남극에서 각 슬라이스로 연결되는 삼각형 생성
+			idx.push_back(bottomIndex); // 남극 정점 인덱스
+			idx.push_back(lastRingStartIndex + i);//마지막 고리의 현재 슬라이스 정점
+			idx.push_back(lastRingStartIndex + i + 1); // 마지막 고리의 다음 슬라이스 정점
+
+		}
+
+		//새로운 매쉬 객체 생성
+		shared_ptr<Mesh> mesh = make_shared<Mesh>();
+		//매쉬 초기화
+		mesh->Init(vec, idx);
+
+		//"Sphere"라는 키로 매쉬를 리소스에 추가
+		Add(L"Sphere", mesh);
+
+		return mesh;	// 매쉬 반환
+
 
 
 

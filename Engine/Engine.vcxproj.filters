@@ -22,7 +22,7 @@
     <Filter Include="Object\Resources\Shader">
       <UniqueIdentifier>{bc3a2c85-5b99-498f-abfe-1f542bdc5705}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Scene">
+    <Filter Include="Scene">
       <UniqueIdentifier>{ebb27544-cf01-40cd-96eb-7e1f842c3eb8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -100,10 +100,10 @@
       <Filter>Test</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>Engine\Scene</Filter>
+      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
-      <Filter>Engine\Scene</Filter>
+      <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>Object</Filter>
@@ -113,6 +113,9 @@
     </ClCompile>
     <ClCompile Include="Resources.cpp">
       <Filter>Object\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Object\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -192,10 +195,10 @@
       <Filter>Test</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
-      <Filter>Engine\Scene</Filter>
+      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="SceneManager.h">
-      <Filter>Engine\Scene</Filter>
+      <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>Object</Filter>
@@ -207,6 +210,9 @@
       <Filter>Object\Resources</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Light.h">
+      <Filter>Object\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\Shader\Default.hlsli">

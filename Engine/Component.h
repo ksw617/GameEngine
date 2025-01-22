@@ -7,6 +7,7 @@ enum class COMPONENT_TYPE : UINT8
 	TRANSFORM,		
 	MESH_FILTER,
 	CAMERA,
+	LIGHT, // LIGHT 추가
 
 	MONO_BEHAVIOUR,
 
@@ -23,7 +24,7 @@ enum
 class Transform;
 class GameObject;
 
-//Object 상속
+
 class Component	: public Object
 {
 public:

@@ -53,63 +53,67 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 	shared_ptr<Scene> scene = make_shared<Scene>();
 
 
-#pragma region Cube
-
-	//Cube 오브젝트 생성
-	shared_ptr<GameObject> cube = make_shared<GameObject>();
-	cube->Init();
-
-	shared_ptr<Transform> transform = cube->GetTransform();
-
-	transform->SetLocalPosition(Vector3(150.f, 100.f, 200.f));	  //위치값
-	transform->SetLocalScale(Vector3(100.f, 100.f, 100.f));		  //크기값
 
 
-	shared_ptr<MeshFilter> meshFilter = make_shared<MeshFilter>();
+	
+#pragma region Sphere
 
 	{
-		//Resources에서 Cube Mesh 로드및 생성
-		shared_ptr<Mesh> mesh = Resources::Get().LoadCubeMesh();
-		meshFilter->SetMesh(mesh);
+		//Sphere 오브젝트 생성
+		shared_ptr<GameObject> sphere = make_shared<GameObject>();
+		sphere->Init();
+
+		shared_ptr<Transform> transform = sphere->GetTransform();
+
+		//위치만 조금 바꿈
+		transform->SetLocalPosition(Vector3(0.f, 100.f, 200.f));
+		transform->SetLocalScale(Vector3(100.f, 100.f, 100.f));
+
+
+		shared_ptr<MeshFilter> meshFilter = make_shared<MeshFilter>();
+
+		{
+			//Resources에서 Sphere Mesh 로드및 생성
+			shared_ptr<Mesh> mesh = Resources::Get().LoadSphereMesh();
+			meshFilter->SetMesh(mesh);
+		}
+		{
+			shared_ptr<Shader> shader = make_shared<Shader>();
+			shared_ptr<Texture> texture = make_shared<Texture>();
+
+			shader->Init(L"..\\Resources\\Shader\\Default.hlsli");
+			texture->Init(L"..\\Resources\\Texture\\DirectX.png");
+
+
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(shader);
+			material->SetTexture(0, texture);
+			meshFilter->SetMaterial(material);
+		}
+
+		sphere->AddComponent(meshFilter);
+		scene->AddGameObject(sphere);
+
 	}
-	{
-		//Shader 및 Texture 로드
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shared_ptr<Texture> texture = make_shared<Texture>();
-
-		shader->Init(L"..\\Resources\\Shader\\Default.hlsli");
-		texture->Init(L"..\\Resources\\Texture\\DirectX.png");
-
-		//Material  생성 및 설정
-		shared_ptr<Material> material = make_shared<Material>();
-		material->SetShader(shader);		// 쉐이더 설정
-		material->SetTexture(0, texture);	// 텍스처 설정
-		meshFilter->SetMaterial(material);	//MeshFilter에 Material 설정
-	}
-
-	//Cube 오브젝트에 MeshFilter 컴포넌트 추가
-	cube->AddComponent(meshFilter);
-	//scene에 Cube 오브젝트 추가
-	scene->AddGameObject(cube);
-
-
+	
 #pragma endregion
 
 
 #pragma region Camera
-	shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-	camera->AddComponent(make_shared<Transform>());
-	camera->AddComponent(make_shared<CameraMoveTest>());
-	camera->AddComponent(make_shared<Camera>());
-	camera->GetTransform()->SetLocalPosition(Vector3(0.f, 100.f, 0.f));
+	{
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
 
-	scene->AddGameObject(camera);
+		camera->AddComponent(make_shared<Transform>());
+		camera->AddComponent(make_shared<CameraMoveTest>());
+		camera->AddComponent(make_shared<Camera>());
+		camera->GetTransform()->SetLocalPosition(Vector3(0.f, 100.f, 0.f));
 
-	return scene;
+		scene->AddGameObject(camera);
+	}
+
 #pragma endregion
 
 
-
-
+	return scene;
 }
