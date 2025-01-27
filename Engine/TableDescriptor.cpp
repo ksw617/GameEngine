@@ -7,7 +7,7 @@ void TableDescriptor::Init(UINT32 count)
 	groupCount = count;
 
 	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-	desc.NumDescriptors = count * (REGISTER_COUNT - 1); // b0~b4 => b1~b4 사용 
+	desc.NumDescriptors = count * (REGISTER_COUNT - 1); 
 	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV; 
 
@@ -15,7 +15,7 @@ void TableDescriptor::Init(UINT32 count)
 	
 	handleSize = GameEngine::Get().GetDevice()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	groupSize = handleSize * (REGISTER_COUNT - 1);// b0~b4 => b1~b4 사용
+	groupSize = handleSize * (REGISTER_COUNT - 1);
 }
 
 void TableDescriptor::Clear()
@@ -58,7 +58,6 @@ void TableDescriptor::CommitTable()
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
 	handle.ptr += currentGroupIndex * groupCount;
 
-	//0 --> 1
 	GameEngine::Get().GetCmdQueue()->GetCmdList()->SetGraphicsRootDescriptorTable(1, handle);
 
 	currentGroupIndex++;
@@ -78,13 +77,12 @@ D3D12_CPU_DESCRIPTOR_HANDLE TableDescriptor::GetCPUHandle(SRV_REGISTER reg)
 D3D12_CPU_DESCRIPTOR_HANDLE TableDescriptor::GetCPUHandle(UINT8 reg)
 {
 
-	//register는 0초과 해야 하니까
 	assert(reg > 0);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = descHeap->GetCPUDescriptorHandleForHeapStart();
 
 	handle.ptr += currentGroupIndex * groupSize;
-	//전체 register에서 1빼주기
+
 	handle.ptr += (reg - 1) * handleSize;
 
 	return handle;
