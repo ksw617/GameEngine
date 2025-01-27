@@ -2,6 +2,12 @@
 #include "Scene.h"
 #include "GameObject.h"
 
+//필요한거 불러오기
+#include "GameEngine.h"
+#include "ConstantBuffer.h"
+#include "Camera.h"
+#include "Light.h"
+
 void Scene::Awake()
 {
 	for(const shared_ptr<GameObject>& gameObject  : gameObjects)
@@ -36,11 +42,52 @@ void Scene::LateUpdate()
 
 void Scene::FinalUpdate()
 {
-	//모든 GameObject의 FinalUpdate 함수 호출
 	for (const shared_ptr<GameObject>& gameobject : gameObjects)
 	{
 		gameobject->FinalUpdate();
 	}
+}
+
+void Scene::Render()
+{
+	//조명 데이터 푸쉬
+	PushLightData();
+
+	//SceneManager에서 해줬던거 여기서
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->GetCamera() == nullptr)
+			continue;
+
+		gameObject->GetCamera()->Render();
+	}
+}
+
+void Scene::PushLightData()
+{
+	//조명 파라미터 구조체 초기화 null로 밀기
+	LightParams lightParams = {};
+
+	//게임 오브젝트들을 순회하면서 조명을 가져옴
+	for (auto& gameObject : gameObjects)
+	{
+		//게임 오브젝트에 조명이 없으면 다음꺼 탐색
+		if (gameObject->GetLight() == nullptr)
+			continue;
+
+		//게임 오브젝트의 조명 컴포넌트의 조명 정보를 가져옴
+		const LightInfo& lightInfo = gameObject->GetLight()->GetLightInfo();
+
+		//조명 파라미터 구조체에 조명 정보를 추가
+		lightParams.lights[lightParams.lightCount] = lightInfo;
+
+		//조명 갯수를 증가
+		lightParams.lightCount++;
+
+	}
+
+	//상수 버퍼에 전역 조명 데이터를 푸쉬
+	GameEngine::Get().GetConstantBuffer(CONSTANT_BUFFER_TYPE::GLOBAL)->PushGlobalData(&lightParams, sizeof(lightParams));
 }
 
 void Scene::AddGameObject(shared_ptr<GameObject> gameObject)

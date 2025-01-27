@@ -27,9 +27,23 @@ void Transform::FinalUpdate()
 
 void Transform::PushData()
 {
-	//월드 - 뷰 - 투영 변환 행렬 계산
-	Matrix mat = matrixWorld * Camera::StaticMatrixView * Camera::StaticMatrixProjection;
+	//TransformParams 구조체 초기화 = 0으로 밀기
+	TransformParams transformParams = {};
 
-	//변환 행렬 데이터를 상수 버퍼에 전달
-	GameEngine::Get().GetConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM)->PushData(&mat, sizeof(mat));
+	//월드 행렬 설정
+	transformParams.matWorld = matrixWorld;
+
+	//카메라의 뷰 행렬 설정(Camera 클라스의 정적 뷰 행렬 변수 사용)
+	transformParams.matView = Camera::StaticMatrixView;
+	//카메라의 투영 행렬 설정(Camera 클라스의 정적 투영 행렬 변수 사용)
+	transformParams.matProjection = Camera::StaticMatrixProjection;
+
+	//월드-뷰 행렬 계산 및 설정(월드 행렬 * 뷰 행렬)
+	transformParams.matWV = matrixWorld * Camera::StaticMatrixView;
+
+	//월드-뷰-투영 행렬 계산 및 설정(월드 행렬 * 뷰 행렬 * 투영 행렬)
+	transformParams.matWVP = matrixWorld * Camera::StaticMatrixView * Camera::StaticMatrixProjection;
+
+	//상수 버퍼에 변환 매트릭스 데이터를 푸쉬
+	GameEngine::Get().GetConstantBuffer(CONSTANT_BUFFER_TYPE::TRANSFORM)->PushData(&transformParams, sizeof(transformParams));
 }

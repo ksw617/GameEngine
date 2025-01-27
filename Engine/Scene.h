@@ -12,8 +12,13 @@ public:
 	void Update();
 	void LateUpdate();
 	void FinalUpdate();
+
+	//씬 자체에 Render 함수
+	void Render();
+private:
+	//라이트 데이터 밀어넣기
+	void PushLightData();
 public:
-	//Scene에 있는 모든 GameObject들에게 접근하기 위해
 	const vector<shared_ptr<GameObject>>& GetGameObjets() { return gameObjects; }
 public:
 	void AddGameObject(shared_ptr<GameObject> gameObject);

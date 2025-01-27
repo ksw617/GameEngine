@@ -8,7 +8,7 @@
 #include "Camera.h" 
 #include "Transform.h"  
 #include "CameraMoveTest.h"
-#include "Resources.h" // Resources 호출
+#include "Resources.h" 
 
 void SceneManager::LoadScene(wstring sceneName)
 {
@@ -32,20 +32,9 @@ void SceneManager::Update()
 void SceneManager::Render()
 {
 
-	if (currentScene == nullptr)
-		return;
-
-	const vector<shared_ptr<GameObject>>& gameObjects = currentScene->GetGameObjets();
-
-	for (auto& gameObject : gameObjects)
-	{
-		if (gameObject->GetCamera() == nullptr)
-			continue;
-
-		gameObject->GetCamera()->Render();
-	}
-
-
+	//현재 씬 Render 돌려주기
+	if (currentScene != nullptr)
+		currentScene->Render();
 }
 
 shared_ptr<Scene> SceneManager::LoadSampleScene()
@@ -59,21 +48,17 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 #pragma region Sphere
 
 	{
-		//Sphere 오브젝트 생성
 		shared_ptr<GameObject> sphere = make_shared<GameObject>();
 		sphere->Init();
 
 		shared_ptr<Transform> transform = sphere->GetTransform();
 
-		//위치만 조금 바꿈
 		transform->SetLocalPosition(Vector3(0.f, 100.f, 200.f));
 		transform->SetLocalScale(Vector3(100.f, 100.f, 100.f));
 
 
 		shared_ptr<MeshFilter> meshFilter = make_shared<MeshFilter>();
-
 		{
-			//Resources에서 Sphere Mesh 로드및 생성
 			shared_ptr<Mesh> mesh = Resources::Get().LoadSphereMesh();
 			meshFilter->SetMesh(mesh);
 		}
