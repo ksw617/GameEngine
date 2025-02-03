@@ -14,15 +14,20 @@ enum
 
 struct MaterialParams
 {
-	array<INT32, MATERIAL_INT_COUNT> intParams;		
+	array<INT32, MATERIAL_INT_COUNT> intParams;
 	array<float, MATERIAL_FLOAT_COUNT> floatParams;
+
+	//Texture on off 파라미터들
+	array<INT32, MATERIAL_TEXTURE_COUNT> textureOnParams;
 
 	void SetInt(UINT8 index, INT32 value) { intParams[index] = value; }
 	void SetFloat(UINT8 index, float value) { floatParams[index] = value; }
 
+	//Texture On Off set 함수
+	void SetTextureOn(UINT8 index, INT32 value) { textureOnParams[index] = value; }
+
 };
 
-//Object 상속
 class Material : public Object
 {
 private:
@@ -30,7 +35,6 @@ private:
 	MaterialParams params;		
 	array<shared_ptr<Texture>, MATERIAL_TEXTURE_COUNT> textures; 
 public:
-	//생성자 & 타입 초기화
 	Material() : Object(OBJECT_TYPE::MATERIAL) {}
 	virtual ~Material() {}
 public:
@@ -41,7 +45,14 @@ public:
 	void SetShader(shared_ptr<Shader> _shader) { shader = _shader; }
 	void SetInt(UINT8 index, INT32 value) { params.SetInt(index, value); }
 	void SetFloat(UINT8 index, float value) { params.SetFloat(index, value); }
-	void SetTexture(UINT8 index, shared_ptr<Texture> value) { textures[index] = value; }
+	void SetTexture(UINT8 index, shared_ptr<Texture> texture)
+	{
+		textures[index] = texture; 
+
+		//texture가 nullptr이라면 0 아니라면 1
+		params.SetTextureOn(index, texture == nullptr ? 0 : 1);
+
+	}
 public:
 	void Update();
 };

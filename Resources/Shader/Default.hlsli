@@ -49,6 +49,13 @@ cbuffer MATERIAL_PARAMS : register(b2)
     float float_2;
     float float_3;
     float float_4;
+    
+    //texture 유무
+    int tex_on_0;
+    int tex_on_1;
+    int tex_on_2;
+    int tex_on_3;
+    int tex_on_4;
 }
 
 Texture2D tex_0 : register(t0);
@@ -66,6 +73,9 @@ struct VS_IN
     float3 pos : POSITION; 
     float2 uv : TEXCOORD;
     float3 normal : NORMAL;
+    //tangent값 추가
+    float3 tangent : TANGENT;
+   
 };
 
 struct VS_OUT
@@ -74,6 +84,11 @@ struct VS_OUT
     float2 uv : TEXCOORD; 
     float3 viewPos : POSITION;
     float3 viewNormal : NORMAL;
+    
+    //viewTangent값 추가
+    float3 viewTangent : TANGENT;
+    //viewBinormal값 추가
+    float3 viewBinormal : BINORMAL;
 };
 
 
@@ -86,6 +101,11 @@ VS_OUT VS_Main(VS_IN input)
     
     output.viewPos = mul(float4(input.pos, 1.f), matWV).xyz;
     output.viewNormal = normalize(mul(float4(input.normal, 0.f), matWV).xyz);
+    
+    //input.tangent값에서 viewTangent 추출
+    output.viewTangent = normalize(mul(float4(input.tangent, 0.f), matWV).xyz);
+    //viewTangent와 viewNormal을 외적한 값을 viewBinormal에 넣어줌
+    output.viewBinormal = normalize(cross(output.viewTangent, output.viewNormal));
     return output;
     
 }
@@ -93,53 +113,36 @@ VS_OUT VS_Main(VS_IN input)
 
 LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos)
 {
-    LightColor color = (LightColor) 0.f;    //초기 조명 색상 초기화
+    LightColor color = (LightColor) 0;   
     
-    float3 viewLightDir = (float3) 0.f;     //뷰 공간에서의 조명 방향 초기화
-    float diffuseRatio = 0.f;               //확산광 비율 초기화
-    float specularRatio = 0.f;              //반사광 비율 초기화
-    float distanceRatio = 0.f;              //거리 비율 초기화
+    float3 viewLightDir = (float3) 0.f;    
+    float diffuseRatio = 0.f;              
+    float specularRatio = 0.f;             
+    float distanceRatio = 1.f;            
     
-    //Directional Light(다이렉트 조명) 라면
+            
+    
     if (light[lightIndex].lightType == 0)
     {
-        //조명 방향을 뷰 공간으로 변환
-        viewLightDir = normalize(mul(float4(light[lightIndex].direction.xyz, 0f), matview).xyz);
-
-        //벡터의 내적 dot 외적 cross
-        //확산광 비율 계산(조명 방향 벡터와 normal 벡터와의 내적)
+        viewLightDir = normalize(mul(float4(light[lightIndex].direction.xyz, 0.f), matview).xyz);
         diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
-
+    
     }
-    //Point Light(포인트 조명)이라면
     else if (light[lightIndex].lightType == 1)
     {
-        //조명 위치를 뷰 공간으로 변환
-        float3 viewLightPos = mul(float4(light[lightIndex].position.xyz, 1f), matview).xyz;
-
-        //조명 방향 벡터 계산(정점 위치와 조명 위치의 차이)
+        float3 viewLightPos = mul(float4(light[lightIndex].position.xyz, 1.f), matview).xyz;
         viewLightDir = normalize(viewPos - viewLightPos);
-        
-        //확산광 비율 계산(조명 방향 벡터와 normal 벡터와의 내적)
         diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
-        
-        //정점 위치과 조명 위치간의 거리 계산
         float dist = distance(viewPos, viewLightPos);
-        
-        //거리 비율 계산(조명 범위에 따른 감쇠)
+       
         distanceRatio = light[lightIndex].range == 0.f ? 0.f : saturate(1.f - pow(dist / light[lightIndex].range, 2));
 
     }
-    //Spot Light(스포트라이트) 라면
     else
     {
-        //조명 위치를 뷰 공간으로 변환
-        float3 viewLightPos = mul(float4(light[lightIndex].position.xyz, 1f), matview).xyz;
-        
-        //조명 방향 벡터 계산(정점 위치와 조명 위치의 차이)의 정규화
+        float3 viewLightPos = mul(float4(light[lightIndex].position.xyz, 1.f), matview).xyz;
         viewLightDir = normalize(viewPos - viewLightPos);
         
-        //확산광 비율 계산(방향벡터와 normal 벡터와의 내적)
         diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
 
         if (light[lightIndex].range == 0.f)
@@ -148,21 +151,13 @@ LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos
         }
         else
         {
-            //스포트라이트의 절반 각도 계산
-            float halfAngle = light[lightIndex].angle / 2;
-            
-            //뷰 공간에서의 조명 벡터 계산
+            float halfAngle = light[lightIndex].angle / 2;      
             float3 viewLightVec = viewPos - viewLightPos;
-            //뷰 공간에서의 조명중심의 방향 벡터 계산
             float3 viewCenterLightDir = normalize(mul(float4(light[lightIndex].direction.xyz, 0.f), matview).xyz);
-
-            //중심 거리 계산(정점 위치와 조명 방향 벡터의 내적)
             float centerDist = dot(viewLightVec, viewCenterLightDir);
             
-            //거리 비율 계산(조명 범위에 따른 감쇠)
             distanceRatio = saturate(1.f - centerDist / light[lightIndex].range);
 
-            //조명 각도 계산(정점 위치와 중심 조명 방향 벡터간의 각도)
             float lightAngle = acos(dot(normalize(viewLightVec), viewCenterLightDir));
 
             if (centerDist < 0.f || centerDist > light[lightIndex].range || lightAngle > halfAngle)
@@ -174,44 +169,56 @@ LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos
 
     }
     
-    //스펙큘러 반사 방향 벡터 계산
     float3 reflectionDir = normalize(viewLightDir + 2 * (saturate(dot(-viewLightDir, viewNormal)) * viewNormal));
-
-    //카메라 방향 벡터 계산
     float3 eyeDir = normalize(viewPos);
-    
-    //스펙큘러 반사 비율 계산
     specularRatio = pow(saturate(dot(-eyeDir, reflectionDir)), 2);
     
-    //최종 조명 색상 계산
     color.diffuse = light[lightIndex].color.diffuse * diffuseRatio * distanceRatio;
     color.ambient = light[lightIndex].color.ambient * distanceRatio;
     color.specular = light[lightIndex].color.specular * specularRatio * distanceRatio;
-    
+
     return color;
 }
 
 
-//픽셀 쉐이더 메인 함수
 float4 PS_Main(VS_OUT input) : SV_Target
 {
-    //기본 색상 설정(흰색)
     float4 color = float4(1.f, 1.f, 1.f, 1.f);
+    
+    //기본 texture값이 true인 경우 텍스처를 샘플링하여 색상을 설정
+    if(tex_on_0)
+        color = tex_0.Sample(sam_0, input.uv);
 
-    //전체 조명 색상 초기화
+    //초기 viewNormal을 설정
+    float3 viewNormal = input.viewNormal;
+    
+    //NormalMap값이 true인 경우 두번째 텍스처를 사용하여 Normal Map 샘플링
+    if(tex_on_1)
+    {
+        //[0~255] 범위의 텍스처 값을 [0,1] 범위로 변환
+        float3 tangentSpaceNormal = tex_1.Sample(sam_0, input.uv).xyz;
+        
+        //[0~1]qjadnlfmf [-1, 1] 범위로 변환
+        tangentSpaceNormal = (tangentSpaceNormal - 0.5f) * 2.f;
+        
+        //TBN 매트릭스를 사용하여 테스처 공간의 Normal을 뷰 공간의 Normal로 변환
+        float3x3 matTBN = { input.viewTangent, input.viewBinormal, input.viewNormal };
+        viewNormal = normalize(mul(tangentSpaceNormal, matTBN));
+
+    }
+    
     LightColor totalColor = (LightColor) 0.f;
     
-    //각 조명에 대한 색상 계산
     for (int i = 0; i < lightCount; i++)
     {
-        LightColor color = CalculateLightColor(i, input.viewNormal, input.viewPos);
-        totalColor.diffuse += color.diffuse;
-        totalColor.ambient += color.ambient;
-        totalColor.specular += color.specular;
+        //현재 조명에 viewNormal 적용
+        LightColor lightColor = CalculateLightColor(i, viewNormal, input.viewPos);
+        totalColor.diffuse += lightColor.diffuse;
+        totalColor.ambient += lightColor.ambient;
+        totalColor.specular += lightColor.specular;
 
     }
 
-    //계산된 조명 색상을 적용하여 최종 색상 결정
     color.xyz = (totalColor.diffuse.xyz * color.xyz)
     + (totalColor.ambient.xyz * color.xyz)
     + totalColor.specular.xyz;
