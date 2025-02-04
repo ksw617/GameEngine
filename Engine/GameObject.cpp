@@ -4,21 +4,25 @@
 #include "MonoBehaviour.h"
 #include "MeshFilter.h"
 #include "Camera.h"
-#include "Light.h"  // 조명 추가
+#include "Light.h"
 
 
 GameObject::GameObject() : Object(OBJECT_TYPE::GAMEOBJECT)
 {
+    //생성하자 마자 Transform component 추가
+    AddComponent(make_shared<Transform>());
 }
 
 GameObject::~GameObject()
 {
 }
 
+/* Init 제거
 void GameObject::Init()
 {
-    AddComponent(make_shared<Transform>());
+    //AddComponent(make_shared<Transform>());
 }
+*/
 
 void GameObject::AddComponent(shared_ptr<Component> component)
 {

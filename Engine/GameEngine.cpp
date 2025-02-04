@@ -29,11 +29,10 @@ void GameEngine::Init(HWND _hwnd, int _width, int _height, bool _windowed)
 	swapChain->Init(hwnd, width, height, windowed, device->GetDevice(), device->GetDXGI(), commandQueue->GetCmdQueue());
 	rootSignature->Init(device->GetDevice());
 
-	//b0은 LightParams 사용
 	CreateConstantBuffer(CBV_REGISTER::b0, sizeof(LightParams), 1);
 
-	//b0을 제외한 b1,b2 사용
-	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(XMFLOAT4), 256);
+	//TransformParams로 변경
+	CreateConstantBuffer(CBV_REGISTER::b1, sizeof(TransformParams), 256);
 	CreateConstantBuffer(CBV_REGISTER::b2, sizeof(MaterialParams), 256);
 
 	tableDesc->Init(256);
@@ -49,7 +48,6 @@ void GameEngine::Render()
 {
 	RenderBegin();
  
-	//SceneManager Render 호출
 	SceneManager::Get().Render();
 
 	RenderEnd();
@@ -61,7 +59,6 @@ void GameEngine::Update()
 	input->Update();
 	timer->Update();
 	
-	//SceneManager Update 호출
 	SceneManager::Get().Update();
 
 	Render();

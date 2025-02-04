@@ -215,7 +215,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resources\Shader\Default.hlsli">
+    <None Include="..\Resources\Shader\Default.fx">
       <Filter>Object\Resources\Shader</Filter>
     </None>
     <None Include="SimpleMath.inl">
@@ -224,5 +224,13 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Resources\Shader\SkyBox.fx">
+      <Filter>Object\Resources\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Params.fx">
+      <Filter>Object\Resources\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

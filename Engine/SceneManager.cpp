@@ -40,13 +40,57 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 {
 	shared_ptr<Scene> scene = make_shared<Scene>();
 
+#pragma region SkyBox
+
+	{
+		//새로운 GameObject를 생성함
+		shared_ptr<GameObject> skyBox = make_shared<GameObject>();
+		
+		//MeshFilter 컴포넌트를 skyBox GameObject에 추가
+		shared_ptr<MeshFilter> meshFilter = make_shared<MeshFilter>();
+		{
+			//Sphere Mesh를 로드하고
+			shared_ptr<Mesh> sphereMesh = Resources::Get().LoadSphereMesh();
+			
+			//MeshFilter에 해당 Sphere Mesh 설정
+			meshFilter->SetMesh(sphereMesh);
+		}
+
+		{
+			//Shader와 Texture를 생성
+			shared_ptr<Shader> shader = make_shared<Shader>();
+			shared_ptr<Texture> texture = make_shared<Texture>();
+
+			//Shader를 초기화 하고 Rasterrizer  & Depth Stencil 설정
+			shader->Init(L"..\\Resources\\Shader\\SkyBox.fx", { RASTERRIZER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS_EQUAL});
+			//Texture를 초기화
+			texture->Init(L"..\\Resources\\Texture\\kris-guico-rsB-he-ye7w-unsplash.jpg");
+
+			//Material을 생성하고 Shader와 Texture를 설정
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(shader);
+			material->SetTexture(0, texture);
+
+			//Material을 MeshFilter에 설정
+			meshFilter->SetMaterial(material);
+		}
+
+		//MeshFilter 컴포넌트를 skyBox GameObject에 추가
+		skyBox->AddComponent(meshFilter);
+
+		//skyBox를 씬에 추가
+		scene->AddGameObject(skyBox);
+	}
+
+#pragma endregion
 
 	
 #pragma region Sphere
 
 	{
 		shared_ptr<GameObject> sphere = make_shared<GameObject>();
-		sphere->Init();
+		//Init 더이상 사용하지 않음
+		//sphere->Init();
 
 		shared_ptr<Transform> transform = sphere->GetTransform();
 
@@ -62,13 +106,11 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 		{
 			shared_ptr<Shader> shader = make_shared<Shader>();
 			shared_ptr<Texture> texture = make_shared<Texture>();
-			//normalMap 할당
 			shared_ptr<Texture> normalMap = make_shared<Texture>();
 
-			shader->Init(L"..\\Resources\\Shader\\Default.hlsli");
-			//texture 경로 바꾸기
+			//fx로 변경
+			shader->Init(L"..\\Resources\\Shader\\Default.fx");
 			texture->Init(L"..\\Resources\\Texture\\Stylized_Stone_Floor_010_basecolor.png");
-			//normalMap 경로도 설정
 			normalMap->Init(L"..\\Resources\\Texture\\Stylized_Stone_Floor_010_normal.png");
 
 
@@ -76,10 +118,7 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(shader);
 			material->SetTexture(0, texture);
-			
-			//normalMap 추가
 			material->SetTexture(1, normalMap);
-
 			meshFilter->SetMaterial(material);
 		}
 
@@ -112,12 +151,13 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 
 	{
 		shared_ptr<GameObject> light = make_shared<GameObject>();
-		light->Init();
+		//Init 더이상 사용 안함
+		//light->Init();
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
-		light->GetLight()->SetLightDirection(Vector3(0.f, -1.f, 0.f));
-		light->GetLight()->SetDiffuse(Vector3(0.5f, 0.5f, 0.5f));
-		light->GetLight()->SetAmbient(Vector3(0.1f, 0.1f, 0.1f));
+		light->GetLight()->SetLightDirection(Vector3(1.f, -1.f, 1.f));
+		light->GetLight()->SetDiffuse(Vector3(0.7f, 0.7f, 0.7f));
+		light->GetLight()->SetAmbient(Vector3(0.3f, 0.3f, 0.3f));
 		light->GetLight()->SetSpecular(Vector3(0.3f, 0.3f, 0.3f));
 
 		scene->AddGameObject(light);
@@ -125,51 +165,6 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 
 #pragma endregion
 
-#pragma region Point Light
-
-	{
-		shared_ptr<GameObject> light = make_shared<GameObject>();
-		light->Init();
-		light->AddComponent(make_shared<Light>());
-		light->GetLight()->SetLightType(LIGHT_TYPE::POINT_LIGHT);
-
-		light->GetTransform()->SetLocalPosition(Vector3(-150.f, 100.f, 200.f));
-		light->GetLight()->SetDiffuse(Vector3(0.f, 0.7f, 0.f));
-		light->GetLight()->SetAmbient(Vector3(0.1f, 0.1f, 0.1f));
-		light->GetLight()->SetSpecular(Vector3(0.1f, 0.1f, 0.1f));
-
-		light->GetLight()->SetLightRange(10000.f);
-
-		scene->AddGameObject(light);
-	}
-
-#pragma endregion
-
-#pragma region Spot Light
-
-	{
-		shared_ptr<GameObject> light = make_shared<GameObject>();
-		light->Init();
-		light->AddComponent(make_shared<Light>());
-		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
-
-		light->GetLight()->SetLightDirection(Vector3(-1.f, 0.f, 0.f));
-		light->GetTransform()->SetLocalPosition(Vector3(150.f, 100.f, 200.f));
-		light->GetLight()->SetDiffuse(Vector3(0.f, 0.f, 0.7f));
-		light->GetLight()->SetAmbient(Vector3(0.1f, 0.1f, 0.1f));
-		light->GetLight()->SetSpecular(Vector3(0.1f, 0.1f, 0.1f));
-
-		
-		light->GetLight()->SetLightRange(10000.f);
-		light->GetLight()->SetLightAngle(XM_PI / 4);
-
-
-		scene->AddGameObject(light);
-	}
-
-#pragma endregion
-
-
-			
+	
 	return scene;
 }
