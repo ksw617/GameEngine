@@ -17,7 +17,7 @@ public:
 	virtual ~GameObject();
 public:
 	//Init 함수 제거
-	//void Init();
+	void Init();
 public:
 	void Awake();
 	void Start();

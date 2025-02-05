@@ -40,11 +40,15 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 {
 	shared_ptr<Scene> scene = make_shared<Scene>();
 
-#pragma region SkyBox
 
+#pragma region SkyBox
+	
 	{
 		//새로운 GameObject를 생성함
 		shared_ptr<GameObject> skyBox = make_shared<GameObject>();
+
+		//Transform 추가
+		skyBox->AddComponent(make_shared<Transform>());
 		
 		//MeshFilter 컴포넌트를 skyBox GameObject에 추가
 		shared_ptr<MeshFilter> meshFilter = make_shared<MeshFilter>();
@@ -83,14 +87,13 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 	}
 
 #pragma endregion
-
-	
+				
 #pragma region Sphere
 
 	{
 		shared_ptr<GameObject> sphere = make_shared<GameObject>();
-		//Init 더이상 사용하지 않음
-		//sphere->Init();
+		//추후에 Transform 추가 하는 쪽으로
+		sphere->AddComponent(make_shared<Transform>());
 
 		shared_ptr<Transform> transform = sphere->GetTransform();
 
@@ -108,7 +111,6 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 			shared_ptr<Texture> texture = make_shared<Texture>();
 			shared_ptr<Texture> normalMap = make_shared<Texture>();
 
-			//fx로 변경
 			shader->Init(L"..\\Resources\\Shader\\Default.fx");
 			texture->Init(L"..\\Resources\\Texture\\Stylized_Stone_Floor_010_basecolor.png");
 			normalMap->Init(L"..\\Resources\\Texture\\Stylized_Stone_Floor_010_normal.png");
@@ -133,6 +135,8 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 
 	{
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
+		//추후에 Transform 추가 하는 쪽으로
+		camera->AddComponent(make_shared<Transform>());
 
 		camera->AddComponent(make_shared<Transform>());
 		camera->AddComponent(make_shared<CameraMoveTest>());
@@ -151,8 +155,9 @@ shared_ptr<Scene> SceneManager::LoadSampleScene()
 
 	{
 		shared_ptr<GameObject> light = make_shared<GameObject>();
-		//Init 더이상 사용 안함
-		//light->Init();
+		//추후에 Transform 추가 하는 쪽으로
+		light->AddComponent(make_shared<Transform>());
+
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 		light->GetLight()->SetLightDirection(Vector3(1.f, -1.f, 1.f));

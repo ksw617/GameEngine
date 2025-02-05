@@ -5,7 +5,7 @@
 
 struct VS_IN
 {
-    float3 localPos : POSITIONT;
+    float3 localPos : POSITION;
     float2 uv : TEXCOORD;
 };
     
@@ -31,7 +31,7 @@ VS_OUT VS_Main(VS_IN input)
 
 }
 
-float4 PS_MAIN(VS_OUT input) : SV_Target
+float4 PS_Main(VS_OUT input) : SV_Target
 {
     float4 color = tex_0.Sample(sam_0, input.uv);
     return color;
