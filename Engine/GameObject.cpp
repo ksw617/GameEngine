@@ -16,7 +16,7 @@ GameObject::~GameObject()
 {
 }
 
-// Init 제거
+/* Init 제거
 void GameObject::Init()
 {
    //AddComponent(make_shared<Transform>());

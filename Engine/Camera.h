@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "OcclusionCulling.h" // Occlusion Culling 사용
 
 enum class PROJECTION_TYPE : UINT8
 {
@@ -21,6 +22,8 @@ private:
 	Matrix matrixView = {};			
 	Matrix matrixProjection = {};	
 
+	OcclusionCulling occlusionCulling;	// 카메라 직접 들구 있게
+
 public:
 	static Matrix StaticMatrixView;			
 	static Matrix StaticMatrixProjection;	
@@ -31,7 +34,6 @@ public:
 public:
 	virtual void FinalUpdate() override;
 public:
-	//Render 함수 추가
 	void Render();
 };
 

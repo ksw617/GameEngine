@@ -10,14 +10,14 @@ class MonoBehaviour;
 class GameObject : public enable_shared_from_this<GameObject>, public Object 
 {
 private:
+	//컬링 마스크 적용 유무
+	bool isCullingMask = true;
 	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> components;
 	vector<shared_ptr<MonoBehaviour>> scripts;	
 public:
 	GameObject();
 	virtual ~GameObject();
 public:
-	//Init 함수 제거
-	void Init();
 public:
 	void Awake();
 	void Start();
@@ -31,6 +31,12 @@ public:
 	shared_ptr<Light> GetLight();	
 	shared_ptr<Component> GetFixedComponent(COMPONENT_TYPE type);
 
+	//isCullingMask Get 함수
+	bool GetCullingMask() const { return isCullingMask; }
+
+public:
+	//isCullingMask Set 함수
+	void SetCullingMask(bool enable) { isCullingMask = enable; }
 public:
 	void AddComponent(shared_ptr<Component> component);
 

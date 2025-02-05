@@ -2,10 +2,10 @@
 #include "Camera.h"
 #include "GameEngine.h"
 #include "Transform.h"
-#include "Scene.h"			//Scene 추가
-#include "SceneManager.h"	//SceneManager 추가
-#include "GameObject.h"		//GameObject 추가
-#include "MeshFilter.h"		//MeshFilter 추가
+#include "Scene.h"			
+#include "SceneManager.h"	
+#include "GameObject.h"		
+#include "MeshFilter.h"		
 
 Matrix Camera::StaticMatrixView;
 Matrix Camera::StaticMatrixProjection;
@@ -36,24 +36,33 @@ void Camera::FinalUpdate()
 
 	StaticMatrixView = matrixView;
 	StaticMatrixProjection = matrixProjection;
+
+	occlusionCulling.FinalUpdate();
 }
 
 void Camera::Render()
 {
-	//현재 씬을 가져옴
 	shared_ptr<Scene> scene = SceneManager::Get().GetCurrentScene();
-
-	//현재 씬의 모든 게임 객체를 가져옴
 	const vector<shared_ptr<GameObject>>& gameObjects = scene->GetGameObjets();
-
-	//각 gameObject를 순회하며 해당 gameObejct에 대한 처리
 	for (auto& gameObject : gameObjects)
 	{
-		//gameObject에 MeshFilter가 없는 경우 패스
 		if (gameObject->GetMeshFilter() == nullptr)
 			continue;
 
-		//gameObject의 MeshFilter 컴포넌트 Render를 실행
+		//CullingMask 적용 유무 체크
+		if (gameObject->GetCullingMask())
+		{
+			//게임오브젝트의 중심값을 가져오기
+			Vector3 center = gameObject->GetTransform()->GetWorldPosition();
+
+			//게임오브젝트의 x,y,z중 가장큰 크기값을 가져오기
+			float radius = gameObject->GetTransform()->GetBoundingSphereRadius();
+
+			//해당 구가 컬링에 포함되지 않는다면 그려주지 않기
+			if (!occlusionCulling.ContainSphere(center, radius))
+				continue;
+		}
+
 		gameObject->GetMeshFilter()->Render();
 
 	}

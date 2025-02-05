@@ -26,6 +26,10 @@ public:
 	Vector3 GetLook() const { return matrixWorld.Backward(); }
 	weak_ptr<Transform> GetParent() { return parent; }
 
+
+	//크기값에서 x,y,z중에 가장 큰 값이 반지름으로 반환
+	float GetBoundingSphereRadius() const { return max(max(localScale.x, localScale.y), localScale.z); }
+
 public:
 	void SetParent(shared_ptr<Transform> _parent) { parent = _parent; }
 	void SetLocalPosition(const Vector3 position) { localPosition = position; }
@@ -35,7 +39,6 @@ public:
 public:
 	virtual void FinalUpdate() override;
 public:
-	//데이터를 최종적으로 GPU에 건내주기 위해
 	void PushData();
 };
 

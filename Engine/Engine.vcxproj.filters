@@ -117,6 +117,9 @@
     <ClCompile Include="Light.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
+    <ClCompile Include="OcclusionCulling.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -212,6 +215,9 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Light.h">
       <Filter>Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="OcclusionCulling.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
